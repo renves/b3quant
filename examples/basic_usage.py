@@ -1,20 +1,20 @@
 """
-Basic usage example for PyBovespa
+Basic usage example for aletheia
 
 This script demonstrates how to download and analyze B3 options data.
 """
 
 
-import pybovespa as pyb
+import aletheia as pyb
 
 
 def main():
-    print("PyBovespa - Basic Usage Example")
+    print("aletheia - Basic Usage Example")
     print("=" * 50)
 
     # Initialize
-    print("\n1. Initializing PyBovespa...")
-    b3 = pyb.PyBovespa(cache_dir="./data")
+    print("\n1. Initializing aletheia...")
+    b3 = pyb.aletheia(cache_dir="./data")
 
     # Download options for 2024
     print("\n2. Downloading options data for 2024...")

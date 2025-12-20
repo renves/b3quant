@@ -9,7 +9,7 @@ from unittest.mock import Mock, patch
 import pytest
 import requests
 
-from pybovespa.downloaders.cotahist import COTAHISTDownloader
+from aletheia.downloaders.cotahist import COTAHISTDownloader
 
 
 class TestCOTAHISTDownloader:
@@ -31,7 +31,7 @@ class TestCOTAHISTDownloader:
     def test_headers_configured(self, downloader):
         """Test that headers are configured"""
         assert "User-Agent" in downloader.session.headers
-        assert "pybovespa" in downloader.session.headers["User-Agent"]
+        assert "aletheia" in downloader.session.headers["User-Agent"]
         assert downloader.session.headers["Referer"] == "https://www.b3.com.br/"
 
     def test_download_yearly_uses_cache(self, downloader, tmp_path):

@@ -5,29 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.3](https://github.com/renves/pybovespa/compare/pybovespa-v0.1.2...pybovespa-v0.1.3) (2025-12-20)
+## [0.1.3](https://github.com/renves/aletheia/compare/aletheia-v0.1.2...aletheia-v0.1.3) (2025-12-20)
 
 
 ### Bug Fixes
 
-* Proper error handling according to lint. ([4757ef9](https://github.com/renves/pybovespa/commit/4757ef925e52141223135c50d22c5a7ea02b94c9))
+* Proper error handling according to lint. ([4757ef9](https://github.com/renves/aletheia/commit/4757ef925e52141223135c50d22c5a7ea02b94c9))
 
-## [0.1.2](https://github.com/renves/pybovespa/compare/pybovespa-v0.1.1...pybovespa-v0.1.2) (2025-12-20)
+## [0.1.2](https://github.com/renves/aletheia/compare/aletheia-v0.1.1...aletheia-v0.1.2) (2025-12-20)
 
 
 ### Bug Fixes
 
-* Fixing lint errors ([9d8665a](https://github.com/renves/pybovespa/commit/9d8665a477fa2d66c24887765175fb9edabbdf91))
+* Fixing lint errors ([9d8665a](https://github.com/renves/aletheia/commit/9d8665a477fa2d66c24887765175fb9edabbdf91))
 
-## [0.1.1](https://github.com/renves/pybovespa/compare/pybovespa-v0.1.0...pybovespa-v0.1.1) (2025-12-20)
+## [0.1.1](https://github.com/renves/aletheia/compare/aletheia-v0.1.0...aletheia-v0.1.1) (2025-12-20)
 
 
 ### Features
 
-* initial release of pybovespa ([078cbb6](https://github.com/renves/pybovespa/commit/078cbb66642551654bad7b4169f86368ea60aa09))
-* release please update ([ecaebe9](https://github.com/renves/pybovespa/commit/ecaebe96021ac62c39f818dd70845150bb7a8986))
-* type of release ([a11cc4c](https://github.com/renves/pybovespa/commit/a11cc4cbc97615cddea519932ec7a0c2e56c5bab))
-* update release-please-config.json ([d3343c3](https://github.com/renves/pybovespa/commit/d3343c3bfa3aefa79d2814d7ccf88535504d1585))
+* initial release of aletheia ([078cbb6](https://github.com/renves/aletheia/commit/078cbb66642551654bad7b4169f86368ea60aa09))
+* release please update ([ecaebe9](https://github.com/renves/aletheia/commit/ecaebe96021ac62c39f818dd70845150bb7a8986))
+* type of release ([a11cc4c](https://github.com/renves/aletheia/commit/a11cc4cbc97615cddea519932ec7a0c2e56c5bab))
+* update release-please-config.json ([d3343c3](https://github.com/renves/aletheia/commit/d3343c3bfa3aefa79d2814d7ccf88535504d1585))
 
 ## [Unreleased]
 
@@ -53,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Initial release combining rb3 download functionality with b3fileparser parsing
 - COTAHIST downloader with retry logic and caching
 - COTAHIST parser with support for options, stocks, and all instruments
-- High-level PyBovespa API for simple data access
+- High-level aletheia API for simple data access
 - Comprehensive test suite with 64% coverage
 - GitHub Actions CI/CD pipeline
 - Type hints throughout the codebase

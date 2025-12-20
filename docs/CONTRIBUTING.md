@@ -1,13 +1,13 @@
-# Contributing to PyBovespa
+# Contributing to aletheia
 
-Thank you for your interest in contributing to PyBovespa!
+Thank you for your interest in contributing to aletheia!
 
 ## Development Setup
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/renves/pybovespa.git
-cd pybovespa
+git clone https://github.com/renves/aletheia.git
+cd aletheia
 ```
 
 2. Install UV (if you don't have it):
@@ -36,12 +36,12 @@ uv run pytest -v
 
 2. Code passes linter:
 ```bash
-uv run ruff check pybovespa/
+uv run ruff check aletheia/
 ```
 
 3. Code is formatted:
 ```bash
-uv run ruff format pybovespa/
+uv run ruff format aletheia/
 ```
 
 ## Commit Messages
@@ -75,8 +75,8 @@ git commit -m "docs: update installation instructions"
 ## Project Structure
 
 ```
-pybovespa/
-├── pybovespa/
+aletheia/
+├── aletheia/
 │   ├── __init__.py          # Main API
 │   ├── config.py            # Configuration
 │   ├── downloaders/         # Download COTAHIST files

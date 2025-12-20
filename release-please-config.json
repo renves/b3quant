@@ -2,12 +2,12 @@
   "packages": {
     ".": {
       "release-type": "python",
-      "package-name": "pybovespa",
+      "package-name": "aletheia",
       "changelog-path": "CHANGELOG.md",
       "bump-minor-pre-major": true,
       "bump-patch-for-minor-pre-major": true,
       "extra-files": [
-        "pybovespa/__init__.py"
+        "aletheia/__init__.py"
       ]
     }
   }

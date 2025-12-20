@@ -1,4 +1,4 @@
-"""PyBovespa - Python library for B3 market data"""
+"""aletheia - Python library for B3 market data"""
 
 import logging
 from datetime import datetime
@@ -19,7 +19,7 @@ logging.basicConfig(level=getattr(logging, config.LOG_LEVEL), format=config.LOG_
 logger = logging.getLogger(__name__)
 
 
-class PyBovespa:
+class aletheia:
     """Main interface for B3 market data"""
 
     def __init__(self, cache_dir: str | None = None):
@@ -48,7 +48,7 @@ class PyBovespa:
 
 def get_options(**kwargs) -> pd.DataFrame:
     """Quick access to options data"""
-    return PyBovespa().get_options(**kwargs)
+    return aletheia().get_options(**kwargs)
 
 
-__all__ = ["PyBovespa", "COTAHISTDownloader", "COTAHISTParser", "get_options"]
+__all__ = ["aletheia", "COTAHISTDownloader", "COTAHISTParser", "get_options"]

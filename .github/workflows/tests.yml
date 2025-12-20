@@ -29,20 +29,20 @@ jobs:
     
     - name: Lint with ruff
       run: |
-        ruff check pybovespa tests
+        ruff check aletheia tests
     
     - name: Check formatting with black
       run: |
-        black --check pybovespa tests
+        black --check aletheia tests
     
     - name: Type check with mypy
       run: |
-        mypy pybovespa
+        mypy aletheia
       continue-on-error: true
     
     - name: Test with pytest
       run: |
-        pytest --cov=pybovespa --cov-report=xml --cov-report=term-missing
+        pytest --cov=aletheia --cov-report=xml --cov-report=term-missing
     
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
