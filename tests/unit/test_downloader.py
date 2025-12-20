@@ -2,12 +2,12 @@
 Tests for COTAHIST downloader
 """
 
+import zipfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
 import pytest
 import requests
-import zipfile
 
 from pybovespa.downloaders.cotahist import COTAHISTDownloader
 
