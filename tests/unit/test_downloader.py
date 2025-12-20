@@ -7,6 +7,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 import requests
+import zipfile
 
 from pybovespa.downloaders.cotahist import COTAHISTDownloader
 
@@ -59,7 +60,7 @@ class TestCOTAHISTDownloader:
             mock_get.return_value = mock_response
 
             # Usando RuntimeError em vez de Exception genérica (B017)
-            with pytest.raises(RuntimeError):
+            with pytest.raises(zipfile.BadZipFile):
                 downloader.download_yearly(2024, force=True)
 
     def test_download_range_skip_errors(self, downloader):
