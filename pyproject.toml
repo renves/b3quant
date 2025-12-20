@@ -43,11 +43,11 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/pybovespa"
+Homepage = "https://github.com/renves/pybovespa"
 Documentation = "https://pybovespa.readthedocs.io"
-Repository = "https://github.com/yourusername/pybovespa"
-Issues = "https://github.com/yourusername/pybovespa/issues"
-Changelog = "https://github.com/yourusername/pybovespa/blob/main/CHANGELOG.md"
+Repository = "https://github.com/renves/pybovespa"
+Issues = "https://github.com/renves/pybovespa/issues"
+Changelog = "https://github.com/renves/pybovespa/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["."]

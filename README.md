@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/pybovespa.svg)](https://badge.fury.io/py/pybovespa)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://github.com/yourusername/pybovespa/workflows/tests/badge.svg)](https://github.com/yourusername/pybovespa/actions)
+[![Tests](https://github.com/renves/pybovespa/workflows/tests/badge.svg)](https://github.com/renves/pybovespa/actions)
 
 Python library for downloading and parsing historical market data from B3 (Brazilian Stock Exchange).
 
@@ -221,7 +221,7 @@ Quick start:
 
 ```bash
 # Clone and setup
-git clone https://github.com/yourusername/pybovespa.git
+git clone https://github.com/renves/pybovespa.git
 cd pybovespa
 uv sync
 
@@ -297,7 +297,7 @@ If you use this library in your research, please cite:
   author = {Renan Alves},
   title = {PyBovespa: Python library for B3 market data},
   year = {2024},
-  url = {https://github.com/yourusername/pybovespa}
+  url = {https://github.com/renves/pybovespa}
 }
 ```
 
@@ -310,5 +310,5 @@ If you use this library in your research, please cite:
 
 ## Support
 
-- 🐛 [Issue Tracker](https://github.com/yourusername/pybovespa/issues)
-- 💬 [Discussions](https://github.com/yourusername/pybovespa/discussions)
+- 🐛 [Issue Tracker](https://github.com/renves/pybovespa/issues)
+- 💬 [Discussions](https://github.com/renves/pybovespa/discussions)
