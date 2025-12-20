@@ -8,7 +8,7 @@
       "bump-patch-for-minor-pre-major": true,
       "extra-files": [
         {
-          "type": "regex",
+          "type": "text",
           "path": "pybovespa/__init__.py",
           "template": "__version__ = \"${version}\""
         }
