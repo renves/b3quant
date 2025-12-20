@@ -38,18 +38,18 @@ class COTAHISTDownloader:
     # Headers to mimic browser request (helps avoid CAPTCHA)
     # Using simple User-Agent from config for maintainability
     HEADERS = {
-        'User-Agent': config.USER_AGENT,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.9,pt-BR;q=0.8,pt;q=0.7',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Referer': 'https://www.b3.com.br/',
-        'DNT': '1',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'same-origin',
-        'Sec-Fetch-User': '?1',
+        "User-Agent": config.USER_AGENT,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9,pt-BR;q=0.8,pt;q=0.7",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Referer": "https://www.b3.com.br/",
+        "DNT": "1",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-User": "?1",
     }
 
     def __init__(self, cache_dir: str = "./data/raw"):
@@ -67,10 +67,7 @@ class COTAHISTDownloader:
         self.session.headers.update(self.HEADERS)
 
     def download_yearly(
-        self,
-        year: int,
-        force: bool = False,
-        max_retries: int = 3
+        self, year: int, force: bool = False, max_retries: int = 3
     ) -> Path:
         """
         Download yearly COTAHIST file.
@@ -105,14 +102,16 @@ class COTAHISTDownloader:
 
         for attempt in range(max_retries):
             try:
-                logger.info(f"Downloading {url} (attempt {attempt + 1}/{max_retries})...")
+                logger.info(
+                    f"Downloading {url} (attempt {attempt + 1}/{max_retries})..."
+                )
 
                 response = self.session.get(url, timeout=config.REQUEST_TIMEOUT)
                 response.raise_for_status()
 
                 # Check if we got HTML instead of ZIP (CAPTCHA page)
-                content_type = response.headers.get('Content-Type', '').lower()
-                if 'text/html' in content_type:
+                content_type = response.headers.get("Content-Type", "").lower()
+                if "text/html" in content_type:
                     raise ValueError(
                         f"Received HTML instead of ZIP file. CAPTCHA may be required.\n"
                         f"Please download manually from:\n"
@@ -126,7 +125,9 @@ class COTAHISTDownloader:
                     z.extractall(self.cache_dir)
 
                 if not txt_path.exists():
-                    raise FileNotFoundError(f"Expected file {txt_path} not found after extraction")
+                    raise FileNotFoundError(
+                        f"Expected file {txt_path} not found after extraction"
+                    )
 
                 logger.info(f"Successfully downloaded and extracted: {txt_path}")
                 return txt_path
@@ -134,7 +135,7 @@ class COTAHISTDownloader:
             except requests.exceptions.RequestException as e:
                 logger.warning(f"Attempt {attempt + 1} failed: {e}")
                 if attempt < max_retries - 1:
-                    wait_time = 2 ** attempt  # Exponential backoff
+                    wait_time = 2**attempt  # Exponential backoff
                     logger.info(f"Waiting {wait_time}s before retry...")
                     time.sleep(wait_time)
                 else:
@@ -142,10 +143,7 @@ class COTAHISTDownloader:
                     raise
 
     def download_daily(
-        self,
-        date: datetime,
-        force: bool = False,
-        max_retries: int = 3
+        self, date: datetime, force: bool = False, max_retries: int = 3
     ) -> Path:
         """
         Download daily COTAHIST file.
@@ -176,13 +174,15 @@ class COTAHISTDownloader:
 
         for attempt in range(max_retries):
             try:
-                logger.info(f"Downloading {url} (attempt {attempt + 1}/{max_retries})...")
+                logger.info(
+                    f"Downloading {url} (attempt {attempt + 1}/{max_retries})..."
+                )
 
                 response = self.session.get(url, timeout=config.REQUEST_TIMEOUT)
                 response.raise_for_status()
 
-                content_type = response.headers.get('Content-Type', '').lower()
-                if 'text/html' in content_type:
+                content_type = response.headers.get("Content-Type", "").lower()
+                if "text/html" in content_type:
                     raise ValueError("CAPTCHA required - please download manually")
 
                 with zipfile.ZipFile(io.BytesIO(response.content)) as z:
@@ -194,16 +194,13 @@ class COTAHISTDownloader:
             except requests.exceptions.RequestException as e:
                 logger.warning(f"Attempt {attempt + 1} failed: {e}")
                 if attempt < max_retries - 1:
-                    wait_time = 2 ** attempt
+                    wait_time = 2**attempt
                     time.sleep(wait_time)
                 else:
                     raise
 
     def download_range(
-        self,
-        start_year: int,
-        end_year: int,
-        skip_errors: bool = True
+        self, start_year: int, end_year: int, skip_errors: bool = True
     ) -> list[Path]:
         """
         Download multiple years.

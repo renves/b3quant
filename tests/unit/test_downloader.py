@@ -29,9 +29,9 @@ class TestCOTAHISTDownloader:
 
     def test_headers_configured(self, downloader):
         """Test that headers are configured"""
-        assert 'User-Agent' in downloader.session.headers
-        assert 'pybovespa' in downloader.session.headers['User-Agent']
-        assert downloader.session.headers['Referer'] == 'https://www.b3.com.br/'
+        assert "User-Agent" in downloader.session.headers
+        assert "pybovespa" in downloader.session.headers["User-Agent"]
+        assert downloader.session.headers["Referer"] == "https://www.b3.com.br/"
 
     def test_download_yearly_uses_cache(self, downloader, tmp_path):
         """Test that cached files are used"""
@@ -52,10 +52,10 @@ class TestCOTAHISTDownloader:
         cached_file.write_text("old data")
 
         # Mock the download
-        with patch.object(downloader.session, 'get') as mock_get:
+        with patch.object(downloader.session, "get") as mock_get:
             mock_response = Mock()
-            mock_response.headers = {'Content-Type': 'application/zip'}
-            mock_response.content = b'fake zip'
+            mock_response.headers = {"Content-Type": "application/zip"}
+            mock_response.content = b"fake zip"
             mock_get.return_value = mock_response
 
             # Usando RuntimeError em vez de Exception genérica (B017)
@@ -64,12 +64,12 @@ class TestCOTAHISTDownloader:
 
     def test_download_range_skip_errors(self, downloader):
         """Test download_range continues on errors"""
-        with patch.object(downloader, 'download_yearly') as mock_download:
+        with patch.object(downloader, "download_yearly") as mock_download:
             # First year succeeds, second fails, third succeeds
             mock_download.side_effect = [
-                Path('file1.txt'),
-                ValueError('Download failed'),
-                Path('file3.txt'),
+                Path("file1.txt"),
+                ValueError("Download failed"),
+                Path("file3.txt"),
             ]
 
             result = downloader.download_range(2020, 2022, skip_errors=True)
@@ -79,9 +79,9 @@ class TestCOTAHISTDownloader:
 
     def test_download_range_raise_on_error(self, downloader):
         """Test download_range raises on error when skip_errors=False"""
-        with patch.object(downloader, 'download_yearly') as mock_download:
+        with patch.object(downloader, "download_yearly") as mock_download:
             # Definindo um erro específico no mock
-            mock_download.side_effect = ValueError('Download failed')
+            mock_download.side_effect = ValueError("Download failed")
 
             # Capturando o mesmo erro específico (B017)
             with pytest.raises(ValueError):

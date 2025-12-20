@@ -20,7 +20,7 @@ class COTAHISTParser:
     def parse_file(
         self,
         filepath: Path | str,
-        instrument_filter: Literal['options', 'stocks', 'all'] | None = 'all'
+        instrument_filter: Literal["options", "stocks", "all"] | None = "all",
     ) -> pd.DataFrame:
         """Parse COTAHIST file with optional instrument filtering"""
         filepath = Path(filepath)
@@ -42,15 +42,15 @@ class COTAHISTParser:
                 dtype=str,
                 chunksize=config.PARSER_CHUNK_SIZE,
             ):
-                chunk = chunk[chunk['record_type'] == '01'].copy()
+                chunk = chunk[chunk["record_type"] == "01"].copy()
 
                 if len(chunk) == 0:
                     continue
 
-                if instrument_filter == 'options':
-                    chunk = chunk[chunk['market_type'].isin(['070', '080'])].copy()
-                elif instrument_filter == 'stocks':
-                    chunk = chunk[chunk['market_type'] == '010'].copy()
+                if instrument_filter == "options":
+                    chunk = chunk[chunk["market_type"].isin(["070", "080"])].copy()
+                elif instrument_filter == "stocks":
+                    chunk = chunk[chunk["market_type"] == "010"].copy()
 
                 if len(chunk) > 0:
                     chunks.append(chunk)
@@ -76,16 +76,16 @@ class COTAHISTParser:
         """Convert column types from strings"""
         for col in meta.PRICE_COLUMNS:
             if col in df.columns:
-                df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0) / 100.0
+                df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0) / 100.0
 
         for col in meta.INTEGER_COLUMNS:
             if col in df.columns:
-                df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0).astype(int)
+                df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0).astype(int)
 
         for col in meta.DATE_COLUMNS:
             if col in df.columns:
-                df[col] = df[col].replace('99991231', pd.NA)
-                df[col] = pd.to_datetime(df[col], format='%Y%m%d', errors='coerce')
+                df[col] = df[col].replace("99991231", pd.NA)
+                df[col] = pd.to_datetime(df[col], format="%Y%m%d", errors="coerce")
 
         for col in meta.STRING_COLUMNS:
             if col in df.columns:
@@ -110,24 +110,24 @@ class COTAHISTParser:
 
     def _add_derived_fields(self, df: pd.DataFrame) -> pd.DataFrame:
         """Add calculated fields"""
-        df['instrument_type'] = df['market_type'].map(meta.MARKET_TYPES)
-        df['underlying'] = df['ticker'].str[:4]
+        df["instrument_type"] = df["market_type"].map(meta.MARKET_TYPES)
+        df["underlying"] = df["ticker"].str[:4]
 
-        if 'maturity_date' in df.columns and 'trade_date' in df.columns:
-            maturity = pd.to_datetime(df['maturity_date'])
-            trade = pd.to_datetime(df['trade_date'])
-            df['days_to_maturity'] = (maturity - trade).dt.days
-            df['time_to_maturity'] = df['days_to_maturity'] / 365.25
+        if "maturity_date" in df.columns and "trade_date" in df.columns:
+            maturity = pd.to_datetime(df["maturity_date"])
+            trade = pd.to_datetime(df["trade_date"])
+            df["days_to_maturity"] = (maturity - trade).dt.days
+            df["time_to_maturity"] = df["days_to_maturity"] / 365.25
 
-        if 'strike_price' in df.columns:
-            df['has_strike'] = df['strike_price'] > 0
+        if "strike_price" in df.columns:
+            df["has_strike"] = df["strike_price"] > 0
 
         return df
 
     def parse_multiple(
         self,
         filepaths: list[Path | str],
-        instrument_filter: Literal['options', 'stocks', 'all'] | None = 'all'
+        instrument_filter: Literal["options", "stocks", "all"] | None = "all",
     ) -> pd.DataFrame:
         """
         Parse multiple COTAHIST files and concatenate.
@@ -160,9 +160,7 @@ class COTAHISTParser:
 
         result = pd.concat(dfs, ignore_index=True)
 
-        logger.info(
-            f"Combined {len(result):,} records from {len(dfs)} files"
-        )
+        logger.info(f"Combined {len(result):,} records from {len(dfs)} files")
 
         return result
 
@@ -182,27 +180,38 @@ class COTAHISTParser:
             >>> summary = parser.get_options_summary(df)
             >>> print(summary.head())
         """
-        if 'instrument_type' not in df.columns:
+        if "instrument_type" not in df.columns:
             raise ValueError("DataFrame missing 'instrument_type' column")
 
-        options = df[df['instrument_type'].isin(['CALL', 'PUT'])].copy()
+        options = df[df["instrument_type"].isin(["CALL", "PUT"])].copy()
 
         if len(options) == 0:
             logger.warning("No options found in DataFrame")
             return pd.DataFrame()
 
-        summary = options.groupby('underlying').agg({
-            'ticker': 'count',
-            'volume': 'sum',
-            'trades_count': 'sum',
-            'close_price': ['min', 'max', 'mean'],
-            'strike_price': ['min', 'max'],
-        }).round(2)
+        summary = (
+            options.groupby("underlying")
+            .agg(
+                {
+                    "ticker": "count",
+                    "volume": "sum",
+                    "trades_count": "sum",
+                    "close_price": ["min", "max", "mean"],
+                    "strike_price": ["min", "max"],
+                }
+            )
+            .round(2)
+        )
 
         summary.columns = [
-            'num_series', 'total_volume', 'total_trades',
-            'min_premium', 'max_premium', 'avg_premium',
-            'min_strike', 'max_strike'
+            "num_series",
+            "total_volume",
+            "total_trades",
+            "min_premium",
+            "max_premium",
+            "avg_premium",
+            "min_strike",
+            "max_strike",
         ]
 
-        return summary.sort_values('total_volume', ascending=False)
+        return summary.sort_values("total_volume", ascending=False)

@@ -7,7 +7,7 @@ from pathlib import Path
 
 # Parser
 PARSER_CHUNK_SIZE = 100_000
-FILE_ENCODING = 'latin1'
+FILE_ENCODING = "latin1"
 
 # Downloader
 B3_BASE_URL = "https://bvmf.bmfbovespa.com.br/InstDados/SerHist"

@@ -14,10 +14,7 @@ __version__ = "0.1.3"
 __author__ = "Renan Alves"
 __email__ = "renanalvees@gmail.com"
 
-logging.basicConfig(
-    level=getattr(logging, config.LOG_LEVEL),
-    format=config.LOG_FORMAT
-)
+logging.basicConfig(level=getattr(logging, config.LOG_LEVEL), format=config.LOG_FORMAT)
 
 logger = logging.getLogger(__name__)
 
@@ -36,15 +33,15 @@ class PyBovespa:
         self,
         year: int | None = None,
         years: tuple[int, int] | None = None,
-        force_download: bool = False
+        force_download: bool = False,
     ) -> pd.DataFrame:
         """Get options data from B3"""
         if year:
             filepath = self.downloader.download_yearly(year, force=force_download)
-            return self.parser.parse_file(filepath, instrument_filter='options')
+            return self.parser.parse_file(filepath, instrument_filter="options")
         elif years:
             filepaths = self.downloader.download_range(years[0], years[1])
-            return self.parser.parse_multiple(filepaths, instrument_filter='options')
+            return self.parser.parse_multiple(filepaths, instrument_filter="options")
         else:
             return self.get_options(year=datetime.now().year)
 
@@ -54,4 +51,4 @@ def get_options(**kwargs) -> pd.DataFrame:
     return PyBovespa().get_options(**kwargs)
 
 
-__all__ = ['PyBovespa', 'COTAHISTDownloader', 'COTAHISTParser', 'get_options']
+__all__ = ["PyBovespa", "COTAHISTDownloader", "COTAHISTParser", "get_options"]
