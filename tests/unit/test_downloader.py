@@ -58,8 +58,8 @@ class TestCOTAHISTDownloader:
             mock_response.content = b'fake zip'
             mock_get.return_value = mock_response
 
-            # This should attempt to download (will fail due to fake zip)
-            with pytest.raises(Exception):
+            # Usando RuntimeError em vez de Exception genérica (B017)
+            with pytest.raises(RuntimeError):
                 downloader.download_yearly(2024, force=True)
 
     def test_download_range_skip_errors(self, downloader):
@@ -68,7 +68,7 @@ class TestCOTAHISTDownloader:
             # First year succeeds, second fails, third succeeds
             mock_download.side_effect = [
                 Path('file1.txt'),
-                Exception('Download failed'),
+                ValueError('Download failed'),
                 Path('file3.txt'),
             ]
 
@@ -80,9 +80,11 @@ class TestCOTAHISTDownloader:
     def test_download_range_raise_on_error(self, downloader):
         """Test download_range raises on error when skip_errors=False"""
         with patch.object(downloader, 'download_yearly') as mock_download:
-            mock_download.side_effect = Exception('Download failed')
+            # Definindo um erro específico no mock
+            mock_download.side_effect = ValueError('Download failed')
 
-            with pytest.raises(Exception):
+            # Capturando o mesmo erro específico (B017)
+            with pytest.raises(ValueError):
                 downloader.download_range(2020, 2022, skip_errors=False)
 
     def test_url_construction(self, downloader):
