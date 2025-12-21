@@ -3,6 +3,7 @@
 import logging
 from datetime import datetime
 from pathlib import Path
+from typing import Literal
 
 import pandas as pd
 
@@ -32,18 +33,67 @@ class B3Quant:
     def get_options(
         self,
         year: int | None = None,
-        years: tuple[int, int] | None = None,
+        month: tuple[int, int] | None = None,
+        date: str | datetime | None = None,
         force_download: bool = False,
     ) -> pd.DataFrame:
         """Get options data from B3"""
-        if year:
+        return self._get_data("options", year, month, date, force_download)
+
+    def get_stocks(
+        self,
+        year: int | None = None,
+        month: tuple[int, int] | None = None,
+        date: str | datetime | None = None,
+        force_download: bool = False,
+    ) -> pd.DataFrame:
+        """Get stocks data from B3"""
+        return self._get_data("stocks", year, month, date, force_download)
+
+    def get_all(
+        self,
+        year: int | None = None,
+        month: tuple[int, int] | None = None,
+        date: str | datetime | None = None,
+        force_download: bool = False,
+    ) -> pd.DataFrame:
+        """Get all instruments data from B3"""
+        return self._get_data("all", year, month, date, force_download)
+
+    def _get_data(
+        self,
+        instrument_filter: Literal["options", "stocks", "all"],
+        year: int | None = None,
+        month: tuple[int, int] | None = None,
+        date_param: str | datetime | None = None,
+        force_download: bool = False,
+    ) -> pd.DataFrame:
+        """Internal method to get data with different filters and time periods"""
+        if date_param is not None:
+            if isinstance(date_param, str):
+                date_obj = datetime.strptime(date_param, "%Y-%m-%d")
+            else:
+                date_obj = date_param
+            filepath = self.downloader.download_daily(date_obj, force=force_download)
+            return self.parser.parse_file(filepath, instrument_filter=instrument_filter)
+
+        elif month is not None:
+            year_val, month_val = month
+            filepath = self.downloader.download_monthly(
+                year_val, month_val, force=force_download
+            )
+            return self.parser.parse_file(filepath, instrument_filter=instrument_filter)
+
+        elif year is not None:
             filepath = self.downloader.download_yearly(year, force=force_download)
-            return self.parser.parse_file(filepath, instrument_filter="options")
-        elif years:
-            filepaths = self.downloader.download_range(years[0], years[1])
-            return self.parser.parse_multiple(filepaths, instrument_filter="options")
+            return self.parser.parse_file(filepath, instrument_filter=instrument_filter)
+
         else:
-            return self.get_options(year=datetime.now().year)
+            return self._get_data(
+                instrument_filter,
+                year=datetime.now().year,
+                force_download=force_download,
+            )
 
 
 def get_options(**kwargs) -> pd.DataFrame:
@@ -51,4 +101,21 @@ def get_options(**kwargs) -> pd.DataFrame:
     return B3Quant().get_options(**kwargs)
 
 
-__all__ = ["B3Quant", "COTAHISTDownloader", "COTAHISTParser", "get_options"]
+def get_stocks(**kwargs) -> pd.DataFrame:
+    """Quick access to stocks data"""
+    return B3Quant().get_stocks(**kwargs)
+
+
+def get_all(**kwargs) -> pd.DataFrame:
+    """Quick access to all instruments data"""
+    return B3Quant().get_all(**kwargs)
+
+
+__all__ = [
+    "B3Quant",
+    "COTAHISTDownloader",
+    "COTAHISTParser",
+    "get_options",
+    "get_stocks",
+    "get_all",
+]

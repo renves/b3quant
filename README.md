@@ -19,8 +19,29 @@ Python library for downloading and parsing historical market data from B3 (Brazi
 
 ## Installation
 
+### From PyPI (Recommended)
+
 ```bash
 pip install b3quant
+```
+
+### From Source (Development)
+
+If you cloned the repository:
+
+```bash
+git clone https://github.com/renves/b3quant.git
+cd b3quant
+pip install -e .
+```
+
+Or using `uv`:
+
+```bash
+git clone https://github.com/renves/b3quant.git
+cd b3quant
+uv sync
+uv run python your_script.py
 ```
 
 ## Quick Start
@@ -51,8 +72,11 @@ b3 = B3Quant()
 # Get options for a single year
 options_2024 = b3.get_options(year=2024)
 
-# Get options for multiple years
-options_historical = b3.get_options(years=(2020, 2024))
+# Get options for a specific month (year, month)
+options_nov = b3.get_options(month=(2024, 11))
+
+# Get options for a specific date
+options_day = b3.get_options(date="2024-12-20")
 
 # Get stocks data
 stocks_2024 = b3.get_stocks(year=2024)
@@ -86,13 +110,11 @@ short_term = options[options['days_to_maturity'] <= 30]
 ### Advanced: Enrich with Underlying Prices
 
 ```python
-from b3quant import B3Quant
+import b3quant as pyb
 
-b3 = B3Quant()
-
-# Get options and stocks
-options = b3.get_options(year=2024)
-stocks = b3.get_stocks(year=2024)
+# Get options and stocks from a specific month
+options = pyb.get_options(month=(2024, 11))
+stocks = pyb.get_stocks(month=(2024, 11))
 
 # Merge to get underlying prices
 options_enriched = options.merge(
@@ -105,13 +127,13 @@ options_enriched = options.merge(
 
 # Calculate moneyness
 options_enriched['moneyness'] = (
-    options_enriched['close_price_underlying'] / 
+    options_enriched['close_price_underlying'] /
     options_enriched['strike_price']
 )
 
 # Filter ATM options (at-the-money)
 atm_options = options_enriched[
-    (options_enriched['moneyness'] >= 0.95) & 
+    (options_enriched['moneyness'] >= 0.95) &
     (options_enriched['moneyness'] <= 1.05)
 ]
 ```
@@ -251,10 +273,19 @@ options = parser.parse_file('path/to/COTAHIST_A2024.TXT', instrument_filter='opt
 
 All data comes from B3 (Brasil, Bolsa, Balcão) official historical data files.
 
+**Official B3 Data Page**: https://www.b3.com.br/en_us/market-data-and-indices/data-services/market-data/historical-data/equities/historical-quotes/
+
+**Available Data**:
+- **Yearly series**: 1986 to current year (COTAHIST_A{YEAR}.ZIP)
+- **Monthly series**: Last 12 months (COTAHIST_M{MM}{YEAR}.ZIP)
+- **Daily series**: Current year (COTAHIST_D{DDMMYYYY}.ZIP)
+
+**Format Details**:
 - Format: COTAHIST (fixed-width text format, 245 bytes per line)
 - Update frequency: Daily
 - Historical depth: Since 1986
 - License: Data is publicly available from B3
+- Encoding: Latin-1
 
 ## Contributing
 

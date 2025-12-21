@@ -92,3 +92,25 @@ class TestCOTAHISTDownloader:
         """Test URL is constructed correctly"""
         expected_base = "https://bvmf.bmfbovespa.com.br/InstDados/SerHist"
         assert downloader.BASE_URL == expected_base
+
+    def test_download_monthly_uses_cache(self, downloader, tmp_path):
+        """Test that cached monthly files are used"""
+        cached_file = tmp_path / "COTAHIST_M112025.TXT"
+        cached_file.write_text("fake data")
+
+        result = downloader.download_monthly(2025, 11, force=False)
+
+        assert result == cached_file
+        assert result.exists()
+
+    def test_download_daily_uses_cache(self, downloader, tmp_path):
+        """Test that cached daily files are used"""
+        from datetime import datetime
+
+        cached_file = tmp_path / "COTAHIST_D18122025.TXT"
+        cached_file.write_text("fake data")
+
+        result = downloader.download_daily(datetime(2025, 12, 18), force=False)
+
+        assert result == cached_file
+        assert result.exists()

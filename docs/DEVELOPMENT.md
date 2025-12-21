@@ -101,12 +101,9 @@ MAX_RETRY_ATTEMPTS = 3
 ### Unit Tests
 
 Located in `tests/unit/`:
+- `test_api.py` - Main API functionality (get_options, get_stocks, get_all)
 - `test_parser.py` - Parser functionality
-- `test_downloader.py` - Download functionality
-
-### Integration Tests
-
-`teste.py` - End-to-end testing with real data
+- `test_downloader.py` - Download functionality (yearly, monthly, daily)
 
 ## Building Package
 
@@ -179,7 +176,7 @@ PARSER_CHUNK_SIZE = 50_000  # Reduce if needed
 ### Download Failures (CAPTCHA)
 
 B3 may require CAPTCHA for automated downloads. Download manually from:
-https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/historico/mercado-a-vista/cotacoes-historicas/
+https://www.b3.com.br/en_us/market-data-and-indices/data-services/market-data/historical-data/equities/historical-quotes/
 
 Then parse locally:
 ```python
@@ -204,7 +201,7 @@ LOG_LEVEL = 'DEBUG'
 
 ## Resources
 
-- [B3 Historical Data](https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/historico/)
+- [B3 Historical Data (Official Page)](https://www.b3.com.br/en_us/market-data-and-indices/data-services/market-data/historical-data/equities/historical-quotes/)
 - [COTAHIST Layout Documentation](https://www.b3.com.br/data/files/33/67/B9/50/D84057102C784E47AC094EA8/SeriesHistoricas_Layout.pdf)
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [Release Please](https://github.com/googleapis/release-please)

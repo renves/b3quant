@@ -2,6 +2,13 @@
 COTAHIST Downloader
 
 Downloads historical market data files from B3 (Brazilian Stock Exchange).
+
+Data source: https://www.b3.com.br/en_us/market-data-and-indices/data-services/market-data/historical-data/equities/historical-quotes/
+
+Available data:
+- Yearly series: 1986 to current year
+- Monthly series: Last 12 months
+- Daily series: Current year
 """
 
 import io
@@ -137,6 +144,75 @@ class COTAHISTDownloader:
 
         raise RuntimeError("Download loop completed without returning")
 
+    def download_monthly(
+        self, year: int, month: int, force: bool = False, max_retries: int = 3
+    ) -> Path:
+        """
+        Download monthly COTAHIST file.
+
+        Args:
+            year: Year (e.g., 2024)
+            month: Month (1-12)
+            force: Force re-download
+            max_retries: Maximum retry attempts
+
+        Returns:
+            Path to extracted TXT file
+
+        Examples:
+            >>> downloader = COTAHISTDownloader()
+            >>> filepath = downloader.download_monthly(2024, 12)
+        """
+        zip_filename = f"COTAHIST_M{month:02d}{year}.ZIP"
+        txt_filename = f"COTAHIST_M{month:02d}{year}.TXT"
+        txt_path = self.cache_dir / txt_filename
+
+        if txt_path.exists() and not force:
+            logger.info(f"Using cached file: {txt_path}")
+            return txt_path
+
+        url = f"{self.BASE_URL}/{zip_filename}"
+
+        for attempt in range(max_retries):
+            try:
+                logger.info(
+                    f"Downloading {url} (attempt {attempt + 1}/{max_retries})..."
+                )
+
+                response = self.session.get(url, timeout=config.REQUEST_TIMEOUT)
+                response.raise_for_status()
+
+                content_type = response.headers.get("Content-Type", "").lower()
+                if "text/html" in content_type:
+                    raise ValueError(
+                        f"Received HTML instead of ZIP file. CAPTCHA may be required.\n"
+                        f"Please download manually from:\n"
+                        f"https://www.b3.com.br/en_us/market-data-and-indices/data-services/market-data/historical-data/equities/historical-quotes/\n"
+                        f"Then use: COTAHISTParser().parse_file('path/to/{txt_filename}')"
+                    )
+
+                with zipfile.ZipFile(io.BytesIO(response.content)) as z:
+                    z.extractall(self.cache_dir)
+
+                if not txt_path.exists():
+                    raise FileNotFoundError(
+                        f"Expected file {txt_path} not found after extraction"
+                    )
+
+                logger.info(f"Successfully downloaded and extracted: {txt_path}")
+                return txt_path
+
+            except requests.exceptions.RequestException as e:
+                logger.warning(f"Attempt {attempt + 1} failed: {e}")
+                if attempt < max_retries - 1:
+                    wait_time = 2**attempt
+                    time.sleep(wait_time)
+                else:
+                    logger.error(f"All {max_retries} download attempts failed")
+                    raise
+
+        raise RuntimeError("Download loop completed without returning")
+
     def download_daily(
         self, date: datetime, force: bool = False, max_retries: int = 3
     ) -> Path:
@@ -178,12 +254,22 @@ class COTAHISTDownloader:
 
                 content_type = response.headers.get("Content-Type", "").lower()
                 if "text/html" in content_type:
-                    raise ValueError("CAPTCHA required - please download manually")
+                    raise ValueError(
+                        f"Received HTML instead of ZIP file. CAPTCHA may be required.\n"
+                        f"Please download manually from:\n"
+                        f"https://www.b3.com.br/en_us/market-data-and-indices/data-services/market-data/historical-data/equities/historical-quotes/\n"
+                        f"Then use: COTAHISTParser().parse_file('path/to/{txt_filename}')"
+                    )
 
                 with zipfile.ZipFile(io.BytesIO(response.content)) as z:
                     z.extractall(self.cache_dir)
 
-                logger.info(f"Downloaded: {txt_path}")
+                if not txt_path.exists():
+                    raise FileNotFoundError(
+                        f"Expected file {txt_path} not found after extraction"
+                    )
+
+                logger.info(f"Successfully downloaded and extracted: {txt_path}")
                 return txt_path
 
             except requests.exceptions.RequestException as e:
@@ -192,6 +278,7 @@ class COTAHISTDownloader:
                     wait_time = 2**attempt
                     time.sleep(wait_time)
                 else:
+                    logger.error(f"All {max_retries} download attempts failed")
                     raise
 
         raise RuntimeError("Download loop completed without returning")
