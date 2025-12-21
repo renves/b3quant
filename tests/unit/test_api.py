@@ -66,40 +66,38 @@ class TestB3QuantAPI:
                 assert isinstance(result, pd.DataFrame)
 
     def test_get_options_month(self, b3):
-        """Test get_options with month parameter"""
+        """Test get_options with year and month parameters"""
         with patch.object(b3.downloader, "download_monthly") as mock_download:
             with patch.object(b3.parser, "parse_file") as mock_parse:
                 mock_download.return_value = Path("fake.txt")
                 mock_parse.return_value = pd.DataFrame({"test": [1, 2, 3]})
 
-                result = b3.get_options(month=(2024, 11))
+                result = b3.get_options(year=2024, month=11)
 
                 mock_download.assert_called_once_with(2024, 11, force=False)
                 assert isinstance(result, pd.DataFrame)
 
-    def test_get_options_date_string(self, b3):
-        """Test get_options with date as string"""
+    def test_get_options_day(self, b3):
+        """Test get_options with year, month, and day parameters"""
         with patch.object(b3.downloader, "download_daily") as mock_download:
             with patch.object(b3.parser, "parse_file") as mock_parse:
                 mock_download.return_value = Path("fake.txt")
                 mock_parse.return_value = pd.DataFrame({"test": [1, 2, 3]})
 
-                result = b3.get_options(date="2024-12-20")
+                result = b3.get_options(year=2024, month=12, day=20)
 
                 assert mock_download.called
                 assert isinstance(result, pd.DataFrame)
 
-    def test_get_options_date_datetime(self, b3):
-        """Test get_options with date as datetime"""
-        with patch.object(b3.downloader, "download_daily") as mock_download:
-            with patch.object(b3.parser, "parse_file") as mock_parse:
-                mock_download.return_value = Path("fake.txt")
-                mock_parse.return_value = pd.DataFrame({"test": [1, 2, 3]})
+    def test_get_options_day_without_month_raises_error(self, b3):
+        """Test that specifying day without month raises ValueError"""
+        with pytest.raises(ValueError, match="year and month are required"):
+            b3.get_options(year=2024, day=20)
 
-                result = b3.get_options(date=datetime(2024, 12, 20))
-
-                assert mock_download.called
-                assert isinstance(result, pd.DataFrame)
+    def test_get_options_month_without_year_raises_error(self, b3):
+        """Test that specifying month without year raises ValueError"""
+        with pytest.raises(ValueError, match="year is required"):
+            b3.get_options(month=11)
 
     def test_get_options_default_current_year(self, b3):
         """Test get_options defaults to current year"""

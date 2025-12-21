@@ -33,54 +33,54 @@ class B3Quant:
     def get_options(
         self,
         year: int | None = None,
-        month: tuple[int, int] | None = None,
-        date: str | datetime | None = None,
+        month: int | None = None,
+        day: int | None = None,
         force_download: bool = False,
     ) -> pd.DataFrame:
         """Get options data from B3"""
-        return self._get_data("options", year, month, date, force_download)
+        return self._get_data("options", year, month, day, force_download)
 
     def get_stocks(
         self,
         year: int | None = None,
-        month: tuple[int, int] | None = None,
-        date: str | datetime | None = None,
+        month: int | None = None,
+        day: int | None = None,
         force_download: bool = False,
     ) -> pd.DataFrame:
         """Get stocks data from B3"""
-        return self._get_data("stocks", year, month, date, force_download)
+        return self._get_data("stocks", year, month, day, force_download)
 
     def get_all(
         self,
         year: int | None = None,
-        month: tuple[int, int] | None = None,
-        date: str | datetime | None = None,
+        month: int | None = None,
+        day: int | None = None,
         force_download: bool = False,
     ) -> pd.DataFrame:
         """Get all instruments data from B3"""
-        return self._get_data("all", year, month, date, force_download)
+        return self._get_data("all", year, month, day, force_download)
 
     def _get_data(
         self,
         instrument_filter: Literal["options", "stocks", "all"],
         year: int | None = None,
-        month: tuple[int, int] | None = None,
-        date_param: str | datetime | None = None,
+        month: int | None = None,
+        day: int | None = None,
         force_download: bool = False,
     ) -> pd.DataFrame:
         """Internal method to get data with different filters and time periods"""
-        if date_param is not None:
-            if isinstance(date_param, str):
-                date_obj = datetime.strptime(date_param, "%Y-%m-%d")
-            else:
-                date_obj = date_param
+        if day is not None:
+            if year is None or month is None:
+                raise ValueError("year and month are required when day is specified")
+            date_obj = datetime(year, month, day)
             filepath = self.downloader.download_daily(date_obj, force=force_download)
             return self.parser.parse_file(filepath, instrument_filter=instrument_filter)
 
         elif month is not None:
-            year_val, month_val = month
+            if year is None:
+                raise ValueError("year is required when month is specified")
             filepath = self.downloader.download_monthly(
-                year_val, month_val, force=force_download
+                year, month, force=force_download
             )
             return self.parser.parse_file(filepath, instrument_filter=instrument_filter)
 

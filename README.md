@@ -52,6 +52,12 @@ import b3quant as pyb
 # Get all options traded in 2024
 options = pyb.get_options(year=2024)
 
+# Get options from November 2024
+options_nov = pyb.get_options(year=2024, month=11)
+
+# Get options from a specific day
+options_day = pyb.get_options(year=2024, month=12, day=20)
+
 # Filter by underlying asset
 petr_options = options[options['underlying'] == 'PETR']
 
@@ -72,14 +78,16 @@ b3 = B3Quant()
 # Get options for a single year
 options_2024 = b3.get_options(year=2024)
 
-# Get options for a specific month (year, month)
-options_nov = b3.get_options(month=(2024, 11))
+# Get options for a specific month
+options_nov = b3.get_options(year=2024, month=11)
 
-# Get options for a specific date
-options_day = b3.get_options(date="2024-12-20")
+# Get options for a specific day
+options_day = b3.get_options(year=2024, month=12, day=20)
 
 # Get stocks data
 stocks_2024 = b3.get_stocks(year=2024)
+stocks_nov = b3.get_stocks(year=2024, month=11)
+stocks_day = b3.get_stocks(year=2024, month=12, day=20)
 
 # Get all instruments
 all_data = b3.get_all(year=2024)
@@ -113,8 +121,8 @@ short_term = options[options['days_to_maturity'] <= 30]
 import b3quant as pyb
 
 # Get options and stocks from a specific month
-options = pyb.get_options(month=(2024, 11))
-stocks = pyb.get_stocks(month=(2024, 11))
+options = pyb.get_options(year=2024, month=11)
+stocks = pyb.get_stocks(year=2024, month=11)
 
 # Merge to get underlying prices
 options_enriched = options.merge(
