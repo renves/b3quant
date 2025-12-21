@@ -19,7 +19,7 @@ logging.basicConfig(level=getattr(logging, config.LOG_LEVEL), format=config.LOG_
 logger = logging.getLogger(__name__)
 
 
-class b3quant:
+class B3Quant:
     """Main interface for B3 market data"""
 
     def __init__(self, cache_dir: str | None = None):
@@ -48,7 +48,7 @@ class b3quant:
 
 def get_options(**kwargs) -> pd.DataFrame:
     """Quick access to options data"""
-    return b3quant().get_options(**kwargs)
+    return B3Quant().get_options(**kwargs)
 
 
-__all__ = ["b3quant", "COTAHISTDownloader", "COTAHISTParser", "get_options"]
+__all__ = ["B3Quant", "COTAHISTDownloader", "COTAHISTParser", "get_options"]

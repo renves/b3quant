@@ -43,10 +43,10 @@ print(options[['ticker', 'strike_price', 'close_price', 'volume']].head())
 ### Basic Usage
 
 ```python
-from b3quant import b3quant
+from b3quant import B3Quant
 
 # Initialize
-b3 = b3quant()
+b3 = B3Quant()
 
 # Get options for a single year
 options_2024 = b3.get_options(year=2024)
@@ -86,9 +86,9 @@ short_term = options[options['days_to_maturity'] <= 30]
 ### Advanced: Enrich with Underlying Prices
 
 ```python
-from b3quant import b3quant
+from b3quant import B3Quant
 
-b3 = b3quant()
+b3 = B3Quant()
 
 # Get options and stocks
 options = b3.get_options(year=2024)
@@ -119,10 +119,10 @@ atm_options = options_enriched[
 ### Custom Cache Directory
 
 ```python
-from b3quant import b3quant
+from b3quant import B3Quant
 
 # Use custom cache directory
-b3 = b3quant(cache_dir="./my_data_cache")
+b3 = B3Quant(cache_dir="./my_data_cache")
 options = b3.get_options(year=2024)
 ```
 

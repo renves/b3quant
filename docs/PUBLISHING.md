@@ -176,8 +176,8 @@ On GitHub:
 
 3. **Test Functionality**
    ```python
-   from b3quant import b3quant
-   pyb = b3quant()
+   from b3quant import B3Quant
+   pyb = B3Quant()
    # Basic test...
    ```
 
