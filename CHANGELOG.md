@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.9](https://github.com/renves/b3quant/compare/b3quant-v0.1.8...b3quant-v0.1.9) (2025-12-21)
+
+
+### Features
+
+* improve API with more intuitive date parameters ([1819307](https://github.com/renves/b3quant/commit/18193072f8ff87527d4cdc85f03fc752ee910b83))
+
 ## [0.1.8](https://github.com/renves/b3quant/compare/b3quant-v0.1.7...b3quant-v0.1.8) (2025-12-21)
 
 

@@ -11,7 +11,7 @@ from . import config
 from .downloaders.cotahist import COTAHISTDownloader
 from .parsers.cotahist import COTAHISTParser
 
-__version__ = "0.1.8"
+__version__ = "0.1.9"
 __author__ = "Renan Alves"
 __email__ = "renanalvees@gmail.com"
 
