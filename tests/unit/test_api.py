@@ -108,7 +108,7 @@ class TestB3QuantAPI:
                 mock_download.return_value = Path("fake.txt")
                 mock_parse.return_value = pd.DataFrame({"test": [1, 2, 3]})
 
-                result = b3.get_options()
+                b3.get_options()
 
                 assert mock_download.called
                 call_year = mock_download.call_args[0][0]
