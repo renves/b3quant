@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.6](https://github.com/renves/b3quant/compare/b3quant-v0.1.5...b3quant-v0.1.6) (2025-12-21)
+
+
+### Features
+
+* Aletheia - to bring out of the hidden ([ee77a8e](https://github.com/renves/b3quant/commit/ee77a8ef4bc5c28eeccc44dbdf737152ad38ab7b))
+* Aletheia - to bring out of the hidden ([b7a7ca6](https://github.com/renves/b3quant/commit/b7a7ca63bfa4a14fffa9ce0d59da6b609df1486a))
+* Change name of package ([a912ca3](https://github.com/renves/b3quant/commit/a912ca3355c500d50b937b35de024fe430575cad))
+* initial release of pybovespa ([078cbb6](https://github.com/renves/b3quant/commit/078cbb66642551654bad7b4169f86368ea60aa09))
+* release please update ([ecaebe9](https://github.com/renves/b3quant/commit/ecaebe96021ac62c39f818dd70845150bb7a8986))
+* type of release ([a11cc4c](https://github.com/renves/b3quant/commit/a11cc4cbc97615cddea519932ec7a0c2e56c5bab))
+* update release-please-config.json ([d3343c3](https://github.com/renves/b3quant/commit/d3343c3bfa3aefa79d2814d7ccf88535504d1585))
+
+
+### Bug Fixes
+
+* fix github links from docs ([26ed57e](https://github.com/renves/b3quant/commit/26ed57e828046862e881910063506c136a90d446))
+* Fixing lint errors ([9d8665a](https://github.com/renves/b3quant/commit/9d8665a477fa2d66c24887765175fb9edabbdf91))
+* Proper error handling according to lint. ([4757ef9](https://github.com/renves/b3quant/commit/4757ef925e52141223135c50d22c5a7ea02b94c9))
+
 ## [0.1.4](https://github.com/renves/b3quant/compare/b3quant-v0.1.3...b3quant-v0.1.4) (2025-12-20)
 
 
