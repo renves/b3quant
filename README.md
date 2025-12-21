@@ -126,9 +126,9 @@ stocks = pyb.get_stocks(year=2024, month=11)
 
 # Merge to get underlying prices
 options_enriched = options.merge(
-    stocks[['ticker', 'trade_date', 'close_price']],
+    stocks[['underlying', 'trade_date', 'close_price']],
     left_on=['underlying', 'trade_date'],
-    right_on=['ticker', 'trade_date'],
+    right_on=['underlying', 'trade_date'],
     how='left',
     suffixes=('', '_underlying')
 )
