@@ -3,7 +3,7 @@
 [![PyPI version](https://badge.fury.io/py/b3quant.svg)](https://badge.fury.io/py/b3quant)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://github.com/renves/b3quant/workflows/tests/badge.svg)](https://github.com/renves/b3quant/actions)
+[![Tests](https://github.com/renves/b3quant/actions/workflows/tests.yml/badge.svg)](https://github.com/renves/b3quant/actions/workflows/tests.yml)
 
 Python library for downloading and parsing historical market data from B3 (Brazilian Stock Exchange).
 

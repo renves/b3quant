@@ -1,8 +1,9 @@
 """COTAHIST Parser - Fixed-width file parser for B3 historical data"""
 
 import logging
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal, cast
 
 import pandas as pd
 
@@ -93,7 +94,7 @@ class COTAHISTParser:
 
         return df
 
-    def _parse_line(self, line: str) -> dict:
+    def _parse_line(self, line: str) -> dict[str, Any]:
         """Parse single line (for testing)"""
         from io import StringIO
 
@@ -106,7 +107,7 @@ class COTAHISTParser:
         )
 
         df = self._convert_types(df)
-        return df.iloc[0].to_dict()
+        return cast(dict[str, Any], df.iloc[0].to_dict())
 
     def _add_derived_fields(self, df: pd.DataFrame) -> pd.DataFrame:
         """Add calculated fields"""
@@ -126,7 +127,7 @@ class COTAHISTParser:
 
     def parse_multiple(
         self,
-        filepaths: list[Path | str],
+        filepaths: Sequence[Path | str],
         instrument_filter: Literal["options", "stocks", "all"] | None = "all",
     ) -> pd.DataFrame:
         """

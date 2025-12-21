@@ -32,11 +32,8 @@ class COTAHISTDownloader:
         ./data/COTAHIST_A2024.TXT
     """
 
-    # Use centralized configuration
     BASE_URL = config.B3_BASE_URL
 
-    # Headers to mimic browser request (helps avoid CAPTCHA)
-    # Using simple User-Agent from config for maintainability
     HEADERS = {
         "User-Agent": config.USER_AGENT,
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
@@ -62,7 +59,6 @@ class COTAHISTDownloader:
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
-        # Create persistent session
         self.session = requests.Session()
         self.session.headers.update(self.HEADERS)
 
@@ -92,12 +88,10 @@ class COTAHISTDownloader:
         txt_filename = f"COTAHIST_A{year}.TXT"
         txt_path = self.cache_dir / txt_filename
 
-        # Check cache
         if txt_path.exists() and not force:
             logger.info(f"Using cached file: {txt_path}")
             return txt_path
 
-        # Download with retries
         url = f"{self.BASE_URL}/{zip_filename}"
 
         for attempt in range(max_retries):
@@ -119,7 +113,6 @@ class COTAHISTDownloader:
                         f"Then use: COTAHISTParser().parse_file('path/to/{txt_filename}')"
                     )
 
-                # Extract ZIP
                 logger.info(f"Extracting {zip_filename}...")
                 with zipfile.ZipFile(io.BytesIO(response.content)) as z:
                     z.extractall(self.cache_dir)
@@ -141,6 +134,8 @@ class COTAHISTDownloader:
                 else:
                     logger.error(f"All {max_retries} download attempts failed")
                     raise
+
+        raise RuntimeError("Download loop completed without returning")
 
     def download_daily(
         self, date: datetime, force: bool = False, max_retries: int = 3
@@ -198,6 +193,8 @@ class COTAHISTDownloader:
                     time.sleep(wait_time)
                 else:
                     raise
+
+        raise RuntimeError("Download loop completed without returning")
 
     def download_range(
         self, start_year: int, end_year: int, skip_errors: bool = True
