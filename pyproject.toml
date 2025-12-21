@@ -3,7 +3,7 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "aletheia"
+name = "b3quant"
 version = "0.1.4"
 description = "Python library for downloading and parsing B3 (Brazilian Stock Exchange) market data"
 readme = "README.md"
@@ -43,15 +43,15 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/renves/aletheia"
-Documentation = "https://aletheia.readthedocs.io"
-Repository = "https://github.com/renves/aletheia"
-Issues = "https://github.com/renves/aletheia/issues"
-Changelog = "https://github.com/renves/aletheia/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/renves/b3quant"
+Documentation = "https://b3quant.readthedocs.io"
+Repository = "https://github.com/renves/b3quant"
+Issues = "https://github.com/renves/b3quant/issues"
+Changelog = "https://github.com/renves/b3quant/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["aletheia*"]
+include = ["b3quant*"]
 exclude = ["tests*"]
 
 [tool.black]
@@ -67,7 +67,7 @@ select = ["E", "F", "I", "N", "W", "UP", "B", "C90"]
 ignore = ["E501"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["aletheia"]
+known-first-party = ["b3quant"]
 
 [tool.mypy]
 python_version = "3.10"
@@ -80,7 +80,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --cov=aletheia --cov-report=term-missing"
+addopts = "-v --cov=b3quant --cov-report=term-missing"
 norecursedirs = [
     ".git",
     ".venv",

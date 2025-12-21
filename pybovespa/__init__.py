@@ -1,4 +1,4 @@
-"""aletheia - Python library for B3 market data"""
+"""b3quant - Python library for B3 market data"""
 
 import logging
 from datetime import datetime
@@ -19,7 +19,7 @@ logging.basicConfig(level=getattr(logging, config.LOG_LEVEL), format=config.LOG_
 logger = logging.getLogger(__name__)
 
 
-class aletheia:
+class b3quant:
     """Main interface for B3 market data"""
 
     def __init__(self, cache_dir: str | None = None):
@@ -48,7 +48,7 @@ class aletheia:
 
 def get_options(**kwargs) -> pd.DataFrame:
     """Quick access to options data"""
-    return aletheia().get_options(**kwargs)
+    return b3quant().get_options(**kwargs)
 
 
-__all__ = ["aletheia", "COTAHISTDownloader", "COTAHISTParser", "get_options"]
+__all__ = ["b3quant", "COTAHISTDownloader", "COTAHISTParser", "get_options"]

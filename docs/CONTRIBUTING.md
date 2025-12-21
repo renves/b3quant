@@ -1,13 +1,13 @@
-# Contributing to aletheia
+# Contributing to b3quant
 
-Thank you for your interest in contributing to aletheia!
+Thank you for your interest in contributing to b3quant!
 
 ## Development Setup
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/renves/aletheia.git
-cd aletheia
+git clone https://github.com/renves/b3quant.git
+cd b3quant
 ```
 
 2. Install UV (if you don't have it):
@@ -36,12 +36,12 @@ uv run pytest -v
 
 2. Code passes linter:
 ```bash
-uv run ruff check aletheia/
+uv run ruff check b3quant/
 ```
 
 3. Code is formatted:
 ```bash
-uv run ruff format aletheia/
+uv run ruff format b3quant/
 ```
 
 ## Commit Messages
@@ -75,8 +75,8 @@ git commit -m "docs: update installation instructions"
 ## Project Structure
 
 ```
-aletheia/
-├── aletheia/
+b3quant/
+├── b3quant/
 │   ├── __init__.py          # Main API
 │   ├── config.py            # Configuration
 │   ├── downloaders/         # Download COTAHIST files

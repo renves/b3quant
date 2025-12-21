@@ -2,12 +2,12 @@
   "packages": {
     ".": {
       "release-type": "python",
-      "package-name": "aletheia",
+      "package-name": "b3quant",
       "changelog-path": "CHANGELOG.md",
       "bump-minor-pre-major": true,
       "bump-patch-for-minor-pre-major": true,
       "extra-files": [
-        "aletheia/__init__.py"
+        "b3quant/__init__.py"
       ]
     }
   }

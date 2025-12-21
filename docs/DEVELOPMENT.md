@@ -14,8 +14,8 @@
 pip install uv
 
 # Clone repository
-git clone https://github.com/renves/aletheia.git
-cd aletheia
+git clone https://github.com/renves/b3quant.git
+cd b3quant
 
 # Install dependencies (creates .venv automatically)
 uv sync
@@ -29,8 +29,8 @@ source .venv/bin/activate  # Linux/Mac
 
 ```bash
 # Clone repository
-git clone https://github.com/renves/aletheia.git
-cd aletheia
+git clone https://github.com/renves/b3quant.git
+cd b3quant
 
 # Create virtual environment
 python -m venv .venv
@@ -50,7 +50,7 @@ pip install -e ".[dev]"
 uv run pytest -v
 
 # Run with coverage
-uv run pytest -v --cov=aletheia --cov-report=html
+uv run pytest -v --cov=b3quant --cov-report=html
 
 # Run specific test file
 uv run pytest tests/unit/test_parser.py -v
@@ -65,25 +65,25 @@ uv run python teste.py
 
 ```bash
 # Check code quality
-uv run ruff check aletheia/
+uv run ruff check b3quant/
 
 # Auto-fix issues
-uv run ruff check --fix aletheia/
+uv run ruff check --fix b3quant/
 
 # Format code
-uv run ruff format aletheia/
+uv run ruff format b3quant/
 ```
 
 ### Type Checking
 
 ```bash
 # Run mypy
-uv run mypy aletheia/
+uv run mypy b3quant/
 ```
 
 ## Project Configuration
 
-Configuration is centralized in `aletheia/config.py`:
+Configuration is centralized in `b3quant/config.py`:
 
 ```python
 # Parser settings
@@ -124,7 +124,7 @@ python -m build
 
 ### Add New Field to Parser
 
-1. Update `aletheia/parsers/cotahist_metadata.py`:
+1. Update `b3quant/parsers/cotahist_metadata.py`:
    ```python
    FIELD_WIDTHS = {
        # ... existing fields
@@ -141,7 +141,7 @@ python -m build
 
 ### Update B3 URL or Headers
 
-Edit `aletheia/config.py`:
+Edit `b3quant/config.py`:
 ```python
 B3_BASE_URL = "new_url"
 USER_AGENT = "new_user_agent"
@@ -183,7 +183,7 @@ https://www.b3.com.br/pt_br/market-data-e-indices/servicos-de-dados/market-data/
 
 Then parse locally:
 ```python
-from aletheia.parsers.cotahist import COTAHISTParser
+from b3quant.parsers.cotahist import COTAHISTParser
 parser = COTAHISTParser()
 df = parser.parse_file('path/to/COTAHIST_A2024.TXT')
 ```
@@ -198,7 +198,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 Or set in config:
 ```python
-# aletheia/config.py
+# b3quant/config.py
 LOG_LEVEL = 'DEBUG'
 ```
 

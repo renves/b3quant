@@ -1,5 +1,5 @@
 """
-aletheia Configuration
+b3quant Configuration
 Centralized configuration constants
 """
 
@@ -15,7 +15,7 @@ DEFAULT_CACHE_DIR = Path("./data/raw")
 REQUEST_TIMEOUT = 30
 MAX_RETRY_ATTEMPTS = 3
 RETRY_DELAY = 2
-USER_AGENT = "aletheia/0.1.0"
+USER_AGENT = "b3quant/0.1.0"
 
 # Logging
 LOG_LEVEL = "INFO"

@@ -5,7 +5,7 @@ Tests for COTAHIST parser
 import pandas as pd
 import pytest
 
-from aletheia.parsers.cotahist import COTAHISTParser
+from b3quant.parsers.cotahist import COTAHISTParser
 
 
 class TestCOTAHISTParser:

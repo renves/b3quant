@@ -1,9 +1,9 @@
-# aletheia
+# b3quant
 
-[![PyPI version](https://badge.fury.io/py/aletheia.svg)](https://badge.fury.io/py/aletheia)
+[![PyPI version](https://badge.fury.io/py/b3quant.svg)](https://badge.fury.io/py/b3quant)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://github.com/renves/aletheia/workflows/tests/badge.svg)](https://github.com/renves/aletheia/actions)
+[![Tests](https://github.com/renves/b3quant/workflows/tests/badge.svg)](https://github.com/renves/b3quant/actions)
 
 Python library for downloading and parsing historical market data from B3 (Brazilian Stock Exchange).
 
@@ -20,13 +20,13 @@ Python library for downloading and parsing historical market data from B3 (Brazi
 ## Installation
 
 ```bash
-pip install aletheia
+pip install b3quant
 ```
 
 ## Quick Start
 
 ```python
-import aletheia as pyb
+import b3quant as pyb
 
 # Get all options traded in 2024
 options = pyb.get_options(year=2024)
@@ -43,10 +43,10 @@ print(options[['ticker', 'strike_price', 'close_price', 'volume']].head())
 ### Basic Usage
 
 ```python
-from aletheia import aletheia
+from b3quant import b3quant
 
 # Initialize
-b3 = aletheia()
+b3 = b3quant()
 
 # Get options for a single year
 options_2024 = b3.get_options(year=2024)
@@ -64,7 +64,7 @@ all_data = b3.get_all(year=2024)
 ### Working with Options Data
 
 ```python
-import aletheia as pyb
+import b3quant as pyb
 
 # Get options
 options = pyb.get_options(year=2024)
@@ -86,9 +86,9 @@ short_term = options[options['days_to_maturity'] <= 30]
 ### Advanced: Enrich with Underlying Prices
 
 ```python
-from aletheia import aletheia
+from b3quant import b3quant
 
-b3 = aletheia()
+b3 = b3quant()
 
 # Get options and stocks
 options = b3.get_options(year=2024)
@@ -119,10 +119,10 @@ atm_options = options_enriched[
 ### Custom Cache Directory
 
 ```python
-from aletheia import aletheia
+from b3quant import b3quant
 
 # Use custom cache directory
-b3 = aletheia(cache_dir="./my_data_cache")
+b3 = b3quant(cache_dir="./my_data_cache")
 options = b3.get_options(year=2024)
 ```
 
@@ -167,7 +167,7 @@ Similar schema but without strike_price, maturity_date, and option-specific fiel
 ### Example 1: Calculate Implied Volatility Surface
 
 ```python
-import aletheia as pyb
+import b3quant as pyb
 import pandas as pd
 
 # Get PETR4 options
@@ -189,7 +189,7 @@ petr_opts = petr_opts[
 ### Example 2: Analyze Option Volume by Strike
 
 ```python
-import aletheia as pyb
+import b3quant as pyb
 import matplotlib.pyplot as plt
 
 options = pyb.get_options(year=2024)
@@ -221,15 +221,15 @@ Quick start:
 
 ```bash
 # Clone and setup
-git clone https://github.com/renves/aletheia.git
-cd aletheia
+git clone https://github.com/renves/b3quant.git
+cd b3quant
 uv sync
 
 # Run tests
 uv run pytest -v
 
 # Lint code
-uv run ruff check aletheia/
+uv run ruff check b3quant/
 ```
 
 ## CAPTCHA Handling
@@ -241,7 +241,7 @@ B3 sometimes requires CAPTCHA for downloads. If automatic download fails:
 3. **Parse the file** directly:
 
 ```python
-from aletheia.parsers.cotahist import COTAHISTParser
+from b3quant.parsers.cotahist import COTAHISTParser
 
 parser = COTAHISTParser()
 options = parser.parse_file('path/to/COTAHIST_A2024.TXT', instrument_filter='options')
@@ -286,18 +286,18 @@ This library was inspired by and builds upon the work of:
 - **[rb3](https://github.com/wilsonfreitas/rb3)** by Wilson Freitas - R package for downloading B3 data
 - **[b3fileparser](https://github.com/coliveira2001/b3fileparser)** by Carlos Oliveira - Python parser for COTAHIST files
 
-aletheia combines the functionality of both libraries into a unified, Pythonic interface with additional features and optimizations.
+b3quant combines the functionality of both libraries into a unified, Pythonic interface with additional features and optimizations.
 
 ## Citation
 
 If you use this library in your research, please cite:
 
 ```bibtex
-@software{aletheia2024,
+@software{b3quant2024,
   author = {Renan Alves},
-  title = {aletheia: Python library for B3 market data},
+  title = {b3quant: Python library for B3 market data},
   year = {2024},
-  url = {https://github.com/renves/aletheia}
+  url = {https://github.com/renves/b3quant}
 }
 ```
 
@@ -310,5 +310,5 @@ If you use this library in your research, please cite:
 
 ## Support
 
-- 🐛 [Issue Tracker](https://github.com/renves/aletheia/issues)
-- 💬 [Discussions](https://github.com/renves/aletheia/discussions)
+- 🐛 [Issue Tracker](https://github.com/renves/b3quant/issues)
+- 💬 [Discussions](https://github.com/renves/b3quant/discussions)

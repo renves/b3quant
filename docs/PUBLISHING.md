@@ -1,4 +1,4 @@
-# Publishing Guide - aletheia
+# Publishing Guide - b3quant
 
 ## Prerequisites
 
@@ -18,8 +18,8 @@
 
 1. PyPI → Account Settings → API tokens
 2. Click "Add API token"
-3. Name: `aletheia-github-actions`
-4. Scope: `Entire account` (or specific to aletheia after the first upload)
+3. Name: `b3quant-github-actions`
+4. Scope: `Entire account` (or specific to b3quant after the first upload)
 5. Copy the token (starts with `pypi-`)
 
 ### 4. Add the Token to GitHub
@@ -93,13 +93,13 @@ git commit -m "docs: update README examples"
 ### 1. Prepare the Environment
 
 ```bash
-cd aletheia
+cd b3quant
 python -m pip install --upgrade pip build twine
 ```
 
 ### 2. Update the Version
 
-Edit `aletheia/__init__.py`:
+Edit `b3quant/__init__.py`:
 ```python
 __version__ = "0.2.0"  # or the new version
 ```
@@ -124,8 +124,8 @@ python -m build
 ```
 
 This creates:
-- `dist/aletheia-0.2.0.tar.gz`
-- `dist/aletheia-0.2.0-py3-none-any.whl`
+- `dist/b3quant-0.2.0.tar.gz`
+- `dist/b3quant-0.2.0-py3-none-any.whl`
 
 ### 5. Upload to TestPyPI (Optional)
 
@@ -136,7 +136,7 @@ python -m twine upload --repository testpypi dist/*
 
 Install from TestPyPI:
 ```bash
-pip install --index-url https://test.pypi.org/simple/ aletheia
+pip install --index-url https://test.pypi.org/simple/ b3quant
 ```
 
 ### 6. Upload to PyPI
@@ -166,18 +166,18 @@ On GitHub:
 ## Post-Publication Verification
 
 1. **Check on PyPI**
-   - https://pypi.org/project/aletheia/
+   - https://pypi.org/project/b3quant/
 
 2. **Test Installation**
    ```bash
-   pip install aletheia
-   python -c "import aletheia; print(aletheia.__version__)"
+   pip install b3quant
+   python -c "import b3quant; print(b3quant.__version__)"
    ```
 
 3. **Test Functionality**
    ```python
-   from aletheia import aletheia
-   pyb = aletheia()
+   from b3quant import b3quant
+   pyb = b3quant()
    # Basic test...
    ```
 
@@ -192,8 +192,8 @@ On GitHub:
 - Generate a new token on PyPI
 
 ### Error: "Package name already taken"
-- The name `aletheia` is already in use
-- Choose another name (e.g. `aletheia-data`)
+- The name `b3quant` is already in use
+- Choose another name (e.g. `b3quant-data`)
 
 ### Release-Please did not create a PR
 - Check if commits follow conventional commits

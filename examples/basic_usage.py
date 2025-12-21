@@ -1,20 +1,20 @@
 """
-Basic usage example for aletheia
+Basic usage example for b3quant
 
 This script demonstrates how to download and analyze B3 options data.
 """
 
 
-import aletheia as pyb
+import b3quant as pyb
 
 
 def main():
-    print("aletheia - Basic Usage Example")
+    print("b3quant - Basic Usage Example")
     print("=" * 50)
 
     # Initialize
-    print("\n1. Initializing aletheia...")
-    b3 = pyb.aletheia(cache_dir="./data")
+    print("\n1. Initializing b3quant...")
+    b3 = pyb.b3quant(cache_dir="./data")
 
     # Download options for 2024
     print("\n2. Downloading options data for 2024...")
