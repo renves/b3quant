@@ -1,7 +1,8 @@
 """Input validation utilities for option pricing models"""
 
-import numpy as np
 from typing import Any
+
+import numpy as np
 
 
 def validate_positive(value: Any, name: str) -> None:

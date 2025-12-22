@@ -1,7 +1,8 @@
 """Unit tests for Black-Scholes option pricing model"""
 
-import pytest
 import numpy as np
+import pytest
+
 from b3quant.models.black_scholes import BlackScholes
 
 
@@ -93,9 +94,7 @@ class TestBlackScholesGreeks:
         """Verify call delta + abs(put delta) ≈ 1 for same strike"""
         S, K, T, r, sigma = 100, 100, 1.0, 0.05, 0.2
 
-        call_delta = bs.delta(
-            S=S, K=K, T=T, r=r, sigma=sigma, option_type="call"
-        )
+        call_delta = bs.delta(S=S, K=K, T=T, r=r, sigma=sigma, option_type="call")
         put_delta = bs.delta(S=S, K=K, T=T, r=r, sigma=sigma, option_type="put")
 
         # For zero dividend yield: call_delta - put_delta = exp(-q*T) = 1
@@ -103,16 +102,12 @@ class TestBlackScholesGreeks:
 
     def test_delta_bounds_call(self, bs):
         """Test call delta is between 0 and 1"""
-        delta = bs.delta(
-            S=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type="call"
-        )
+        delta = bs.delta(S=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type="call")
         assert 0 <= delta <= 1
 
     def test_delta_bounds_put(self, bs):
         """Test put delta is between -1 and 0"""
-        delta = bs.delta(
-            S=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type="put"
-        )
+        delta = bs.delta(S=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type="put")
         assert -1 <= delta <= 0
 
     def test_gamma_symmetry(self, bs):
@@ -156,9 +151,6 @@ class TestBlackScholesGreeks:
         theta_call = bs.theta(
             S=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type="call"
         )
-        theta_put = bs.theta(
-            S=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type="put"
-        )
 
         # Theta is typically negative (time decay)
         # Note: Can be positive for deep ITM puts
@@ -166,16 +158,12 @@ class TestBlackScholesGreeks:
 
     def test_rho_call_positive(self, bs):
         """Rho for calls should be positive"""
-        rho = bs.rho(
-            S=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type="call"
-        )
+        rho = bs.rho(S=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type="call")
         assert rho > 0
 
     def test_rho_put_negative(self, bs):
         """Rho for puts should be negative"""
-        rho = bs.rho(
-            S=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type="put"
-        )
+        rho = bs.rho(S=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type="put")
         assert rho < 0
 
     def test_greeks_vectorized(self, bs):
@@ -237,41 +225,31 @@ class TestBlackScholesEdgeCases:
         """Test behavior at expiration (T=0 should give intrinsic value)"""
         # At expiration, option value = intrinsic value
         # Note: T=0 causes division by zero, so use very small T
-        price = bs.price(
-            S=105, K=100, T=1e-10, r=0.05, sigma=0.2, option_type="call"
-        )
+        price = bs.price(S=105, K=100, T=1e-10, r=0.05, sigma=0.2, option_type="call")
         intrinsic = 105 - 100
         assert abs(price - intrinsic) < 0.01
 
     def test_very_high_volatility(self, bs):
         """Test with very high volatility"""
-        price = bs.price(
-            S=100, K=100, T=1.0, r=0.05, sigma=2.0, option_type="call"
-        )
+        price = bs.price(S=100, K=100, T=1.0, r=0.05, sigma=2.0, option_type="call")
         # Very high volatility means lots of uncertainty, high option value
         assert price > 30  # Should be significant
 
     def test_long_maturity(self, bs):
         """Test with long time to maturity"""
-        price = bs.price(
-            S=100, K=100, T=10.0, r=0.05, sigma=0.2, option_type="call"
-        )
+        price = bs.price(S=100, K=100, T=10.0, r=0.05, sigma=0.2, option_type="call")
         # Long maturity means more time value
         assert price > 20
 
     def test_deep_itm_call(self, bs):
         """Test deep in-the-money call"""
-        price = bs.price(
-            S=150, K=100, T=1.0, r=0.05, sigma=0.2, option_type="call"
-        )
+        price = bs.price(S=150, K=100, T=1.0, r=0.05, sigma=0.2, option_type="call")
         # Deep ITM call should be worth at least intrinsic value
         intrinsic = 150 - 100
         assert price >= intrinsic
 
     def test_deep_otm_call(self, bs):
         """Test deep out-of-the-money call"""
-        price = bs.price(
-            S=50, K=100, T=1.0, r=0.05, sigma=0.2, option_type="call"
-        )
+        price = bs.price(S=50, K=100, T=1.0, r=0.05, sigma=0.2, option_type="call")
         # Deep OTM call should have very low value
         assert price < 1.0

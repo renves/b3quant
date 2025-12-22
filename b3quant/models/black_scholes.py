@@ -1,11 +1,12 @@
 """Black-Scholes option pricing model with Greeks"""
 
 import logging
-import numpy as np
-from scipy import stats
 from typing import Literal
 
-from .base import PricingModel, GreeksCalculator
+import numpy as np
+from scipy import stats
+
+from .base import GreeksCalculator, PricingModel
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +101,9 @@ class BlackScholes(PricingModel, GreeksCalculator):
                 -q * T
             ) * stats.norm.cdf(-d1)
         else:
-            raise ValueError(f"Invalid option_type: {option_type}. Must be 'call' or 'put'")
+            raise ValueError(
+                f"Invalid option_type: {option_type}. Must be 'call' or 'put'"
+            )
 
     def delta(
         self,

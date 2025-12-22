@@ -1,7 +1,8 @@
 """Base classes for option pricing models"""
 
 from abc import ABC, abstractmethod
-from typing import Protocol, Literal
+from typing import Literal, Protocol
+
 import numpy as np
 
 
