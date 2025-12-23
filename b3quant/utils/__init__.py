@@ -1,5 +1,5 @@
 """Utility functions for b3quant"""
 
-from . import validators
+from . import retry, validators
 
-__all__ = ["validators"]
+__all__ = ["retry", "validators"]

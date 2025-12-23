@@ -13,9 +13,13 @@ FILE_ENCODING = "latin1"
 B3_BASE_URL = "https://bvmf.bmfbovespa.com.br/InstDados/SerHist"
 DEFAULT_CACHE_DIR = Path("./data/raw")
 REQUEST_TIMEOUT = 30
-MAX_RETRY_ATTEMPTS = 3
-RETRY_DELAY = 2
 USER_AGENT = "b3quant/0.1.0"
+
+# Retry Strategy (Exponential Backoff with Jitter)
+MAX_RETRY_ATTEMPTS = 3
+RETRY_BASE_DELAY = 1.0  # Base delay in seconds
+RETRY_MAX_DELAY = 60.0  # Maximum delay cap in seconds
+RETRY_JITTER = True  # Add random jitter to prevent thundering herd
 
 # Logging
 LOG_LEVEL = "INFO"
