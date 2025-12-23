@@ -31,12 +31,16 @@ dependencies = [
     "requests>=2.31.0",
     "scipy>=1.10.0",
     "tqdm>=4.65.0",
+    "pyarrow>=14.0.0",
+    "httpx>=0.26.0",
+    "typer>=0.9.0",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.4.0",
     "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.23.0",
     "black>=23.0.0",
     "mypy>=1.5.0",
     "ruff>=0.1.0",
@@ -46,6 +50,9 @@ dev = [
     "types-requests>=2.31.0",
     "types-tqdm>=4.65.0",
 ]
+
+[project.scripts]
+b3quant = "b3quant.cli:app"
 
 [project.urls]
 Homepage = "https://github.com/renves/b3quant"
@@ -73,6 +80,7 @@ ignore = [
     "E501",  # Line too long
     "N803",  # Argument name should be lowercase (allow S, K, T for math notation)
     "N806",  # Variable in function should be lowercase (allow S, K, T for math notation)
+    "B008",  # Do not perform function call in argument defaults (typer uses this pattern)
 ]
 
 [tool.ruff.lint.isort]

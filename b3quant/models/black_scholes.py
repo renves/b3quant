@@ -93,9 +93,17 @@ class BlackScholes(PricingModel, GreeksCalculator):
         d2 = self._d2(d1, sigma, T)
 
         if option_type.lower() == "call":
-            return S * np.exp(-q * T) * stats.norm.cdf(d1) - K * np.exp(-r * T) * stats.norm.cdf(d2)  # type: ignore[no-any-return]
+            return S * np.exp(-q * T) * stats.norm.cdf(d1) - K * np.exp(  # type: ignore[no-any-return]
+                -r * T
+            ) * stats.norm.cdf(
+                d2
+            )
         elif option_type.lower() == "put":
-            return K * np.exp(-r * T) * stats.norm.cdf(-d2) - S * np.exp(-q * T) * stats.norm.cdf(-d1)  # type: ignore[no-any-return]
+            return K * np.exp(-r * T) * stats.norm.cdf(-d2) - S * np.exp(  # type: ignore[no-any-return]
+                -q * T
+            ) * stats.norm.cdf(
+                -d1
+            )
         else:
             raise ValueError(
                 f"Invalid option_type: {option_type}. Must be 'call' or 'put'"
