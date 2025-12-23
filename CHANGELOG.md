@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.11](https://github.com/renves/b3quant/compare/b3quant-v0.1.10...b3quant-v0.1.11) (2025-12-23)
+
+
+### Features
+
+* add tqdm progress bars and fix mypy type errors ([e699b5e](https://github.com/renves/b3quant/commit/e699b5ed31d3bc61a6c6ae0fc778ff559748863b)), closes [#12](https://github.com/renves/b3quant/issues/12)
+* implement cache mechanism with TTL support ([4a2dea7](https://github.com/renves/b3quant/commit/4a2dea776429272cf9ee2c043e8854efd7ad9c0a)), closes [#13](https://github.com/renves/b3quant/issues/13)
+
 ## [0.1.10](https://github.com/renves/b3quant/compare/b3quant-v0.1.9...b3quant-v0.1.10) (2025-12-23)
 
 
