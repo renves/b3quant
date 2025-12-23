@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.13](https://github.com/renves/b3quant/compare/b3quant-v0.1.12...b3quant-v0.1.13) (2025-12-23)
+
+
+### Features
+
+* add CLI, Parquet storage, and infrastructure improvements ([a034202](https://github.com/renves/b3quant/commit/a0342023e1a8912a249976bc63dd4e3f6424fa95))
+* implement async downloads and parallel parsing ([c144906](https://github.com/renves/b3quant/commit/c14490618c5d18f46f4d605dfe6d1f2b3fcbe507)), closes [#11](https://github.com/renves/b3quant/issues/11)
+
+
+### Bug Fixes
+
+* adjust Parquet storage tests for partition columns ([3bb2e60](https://github.com/renves/b3quant/commit/3bb2e6050bebce6882c6699011b172c611e790ee))
+
 ## [0.1.12](https://github.com/renves/b3quant/compare/b3quant-v0.1.11...b3quant-v0.1.12) (2025-12-23)
 
 
