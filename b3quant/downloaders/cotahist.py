@@ -20,6 +20,7 @@ from pathlib import Path
 import requests
 
 from .. import config
+from ..utils.cache import create_cache
 from ..utils.retry import exponential_backoff_with_jitter
 
 logger = logging.getLogger(__name__)
@@ -56,18 +57,79 @@ class COTAHISTDownloader:
         "Sec-Fetch-User": "?1",
     }
 
-    def __init__(self, cache_dir: str = "./data/raw"):
+    def __init__(
+        self, cache_dir: str = "./data/raw", use_metadata_cache: bool | None = None
+    ):
         """
         Initialize downloader.
 
         Args:
             cache_dir: Directory to store downloaded files
+            use_metadata_cache: Enable metadata cache (default: from config)
         """
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
 
         self.session = requests.Session()
         self.session.headers.update(self.HEADERS)
+
+        # Initialize metadata cache (tracks downloads with TTL)
+        self.use_metadata_cache = (
+            use_metadata_cache if use_metadata_cache is not None else config.CACHE_ENABLED
+        )
+        if self.use_metadata_cache:
+            self.metadata_cache = create_cache(
+                backend=config.CACHE_BACKEND, cache_dir=config.CACHE_DIR
+            )
+            logger.debug(f"Metadata cache enabled (backend: {config.CACHE_BACKEND})")
+        else:
+            self.metadata_cache = None
+
+    def _is_cache_valid(self, cache_key: str, file_path: Path) -> bool:
+        """
+        Check if cached file is still valid.
+
+        Args:
+            cache_key: Cache metadata key
+            file_path: Path to cached file
+
+        Returns:
+            True if cache is valid, False otherwise
+        """
+        # File must exist
+        if not file_path.exists():
+            return False
+
+        # If metadata cache disabled, only check file existence
+        if not self.use_metadata_cache or self.metadata_cache is None:
+            return True
+
+        # Check metadata cache for TTL
+        metadata = self.metadata_cache.get(cache_key)
+        if metadata is None:
+            # No metadata, file may be old - re-download
+            logger.debug(f"No metadata found for {cache_key}")
+            return False
+
+        logger.debug(f"Cache hit for {cache_key}")
+        return True
+
+    def _update_cache_metadata(self, cache_key: str, file_path: Path) -> None:
+        """
+        Update cache metadata after successful download.
+
+        Args:
+            cache_key: Cache metadata key
+            file_path: Path to downloaded file
+        """
+        if not self.use_metadata_cache or self.metadata_cache is None:
+            return
+
+        ttl_seconds = config.CACHE_TTL_DAYS * 24 * 60 * 60
+        metadata = {"file_path": str(file_path), "size": file_path.stat().st_size}
+
+        self.metadata_cache.set(cache_key, metadata, ttl=ttl_seconds)
+        logger.debug(f"Updated cache metadata for {cache_key} (TTL: {config.CACHE_TTL_DAYS} days)")
 
     def _download_with_retry(
         self,
@@ -180,20 +242,27 @@ class COTAHISTDownloader:
         zip_filename = f"COTAHIST_A{year}.ZIP"
         txt_filename = f"COTAHIST_A{year}.TXT"
         txt_path = self.cache_dir / txt_filename
+        cache_key = f"cotahist_yearly_{year}"
 
-        if txt_path.exists() and not force:
+        # Check cache validity (file + TTL)
+        if not force and self._is_cache_valid(cache_key, txt_path):
             logger.info(f"Using cached file: {txt_path}")
             return txt_path
 
         url = f"{self.BASE_URL}/{zip_filename}"
 
-        return self._download_with_retry(
+        result = self._download_with_retry(
             url=url,
             zip_filename=zip_filename,
             txt_filename=txt_filename,
             txt_path=txt_path,
             max_retries=max_retries or config.MAX_RETRY_ATTEMPTS,
         )
+
+        # Update cache metadata
+        self._update_cache_metadata(cache_key, result)
+
+        return result
 
     def download_monthly(
         self, year: int, month: int, force: bool = False, max_retries: int | None = None
@@ -217,20 +286,27 @@ class COTAHISTDownloader:
         zip_filename = f"COTAHIST_M{month:02d}{year}.ZIP"
         txt_filename = f"COTAHIST_M{month:02d}{year}.TXT"
         txt_path = self.cache_dir / txt_filename
+        cache_key = f"cotahist_monthly_{year}_{month:02d}"
 
-        if txt_path.exists() and not force:
+        # Check cache validity (file + TTL)
+        if not force and self._is_cache_valid(cache_key, txt_path):
             logger.info(f"Using cached file: {txt_path}")
             return txt_path
 
         url = f"{self.BASE_URL}/{zip_filename}"
 
-        return self._download_with_retry(
+        result = self._download_with_retry(
             url=url,
             zip_filename=zip_filename,
             txt_filename=txt_filename,
             txt_path=txt_path,
             max_retries=max_retries or config.MAX_RETRY_ATTEMPTS,
         )
+
+        # Update cache metadata
+        self._update_cache_metadata(cache_key, result)
+
+        return result
 
     def download_daily(
         self, date: datetime, force: bool = False, max_retries: int | None = None
@@ -255,20 +331,27 @@ class COTAHISTDownloader:
         zip_filename = f"COTAHIST_D{date_str}.ZIP"
         txt_filename = f"COTAHIST_D{date_str}.TXT"
         txt_path = self.cache_dir / txt_filename
+        cache_key = f"cotahist_daily_{date_str}"
 
-        if txt_path.exists() and not force:
+        # Check cache validity (file + TTL)
+        if not force and self._is_cache_valid(cache_key, txt_path):
             logger.info(f"Using cached file: {txt_path}")
             return txt_path
 
         url = f"{self.BASE_URL}/{zip_filename}"
 
-        return self._download_with_retry(
+        result = self._download_with_retry(
             url=url,
             zip_filename=zip_filename,
             txt_filename=txt_filename,
             txt_path=txt_path,
             max_retries=max_retries or config.MAX_RETRY_ATTEMPTS,
         )
+
+        # Update cache metadata
+        self._update_cache_metadata(cache_key, result)
+
+        return result
 
     def download_range(
         self, start_year: int, end_year: int, skip_errors: bool = True

@@ -21,6 +21,12 @@ RETRY_BASE_DELAY = 1.0  # Base delay in seconds
 RETRY_MAX_DELAY = 60.0  # Maximum delay cap in seconds
 RETRY_JITTER = True  # Add random jitter to prevent thundering herd
 
+# Cache Settings
+CACHE_BACKEND = "json"  # Cache backend: "json" or "sqlite"
+CACHE_DIR = Path("./data/cache")  # Cache directory
+CACHE_TTL_DAYS = 30  # Default TTL for cached files (days)
+CACHE_ENABLED = True  # Enable/disable caching globally
+
 # Logging
 LOG_LEVEL = "INFO"
 LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
