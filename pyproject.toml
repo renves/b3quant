@@ -29,6 +29,7 @@ requires-python = ">=3.10"
 dependencies = [
     "pandas>=2.0.0",
     "requests>=2.31.0",
+    "scipy>=1.10.0",
 ]
 
 [project.optional-dependencies]
@@ -66,7 +67,11 @@ line-length = 88
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP", "B", "C90"]
-ignore = ["E501"]
+ignore = [
+    "E501",  # Line too long
+    "N803",  # Argument name should be lowercase (allow S, K, T for math notation)
+    "N806",  # Variable in function should be lowercase (allow S, K, T for math notation)
+]
 
 [tool.ruff.lint.isort]
 known-first-party = ["b3quant"]
