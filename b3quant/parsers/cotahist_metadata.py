@@ -5,6 +5,8 @@ Reference:
     http://www.b3.com.br/data/files/C8/F3/08/B4/297BE410F816C9E492D828A8/SeriesHistoricas_Layout.pdf
 """
 
+from enum import Enum
+
 # Field widths for fixed-width format parsing
 FIELD_WIDTHS = {
     "record_type": 2,
@@ -91,6 +93,14 @@ MARKET_TYPES = {
     "070": "CALL",
     "080": "PUT",
 }
+
+
+class InstrumentCategory(Enum):
+    """Market type code groups for different instrument categories."""
+
+    OPTION = ["070", "080"]  # CALL and PUT
+    STOCK = "010"
+
 
 # BDI code mappings
 BDI_CODES = {
