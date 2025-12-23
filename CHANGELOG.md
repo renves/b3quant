@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.14](https://github.com/renves/b3quant/compare/b3quant-v0.1.13...b3quant-v0.1.14) (2025-12-23)
+
+
+### Features
+
+* add Parquet cache for parsed data and InstrumentCategory enum ([b4a547f](https://github.com/renves/b3quant/commit/b4a547ff0bcd1e174d721b115feb00ed1f00dd87))
+
 ## [0.1.13](https://github.com/renves/b3quant/compare/b3quant-v0.1.12...b3quant-v0.1.13) (2025-12-23)
 
 
