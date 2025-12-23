@@ -44,9 +44,7 @@ class TestExponentialBackoffWithJitter:
 
     def test_custom_base_delay(self):
         """Test with custom base delay"""
-        delay = exponential_backoff_with_jitter(
-            attempt=1, base_delay=2.0, jitter=False
-        )
+        delay = exponential_backoff_with_jitter(attempt=1, base_delay=2.0, jitter=False)
         # 2.0 * 2^1 = 4.0
         assert delay == 4.0
 
@@ -113,9 +111,7 @@ class TestRetryWithBackoff:
     def test_specific_exception_handling(self):
         """Test that only specified exceptions trigger retry"""
 
-        @retry_with_backoff(
-            max_retries=3, base_delay=0.01, exceptions=(ValueError,)
-        )
+        @retry_with_backoff(max_retries=3, base_delay=0.01, exceptions=(ValueError,))
         def raises_type_error():
             raise TypeError("Not retryable")
 
@@ -132,9 +128,7 @@ class TestRetryWithBackoff:
 
         call_count = 0
 
-        @retry_with_backoff(
-            max_retries=3, base_delay=0.01, on_retry=on_retry_fn
-        )
+        @retry_with_backoff(max_retries=3, base_delay=0.01, on_retry=on_retry_fn)
         def fails_twice():
             nonlocal call_count
             call_count += 1

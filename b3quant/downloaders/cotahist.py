@@ -81,12 +81,16 @@ class COTAHISTDownloader:
 
         # Initialize metadata cache (tracks downloads with TTL)
         self.use_metadata_cache = (
-            use_metadata_cache if use_metadata_cache is not None else config.CACHE_ENABLED
+            use_metadata_cache
+            if use_metadata_cache is not None
+            else config.CACHE_ENABLED
         )
         self.metadata_cache: CacheBackend | None
         if self.use_metadata_cache:
             backend = cast(Literal["json", "sqlite"], config.CACHE_BACKEND)
-            self.metadata_cache = create_cache(backend=backend, cache_dir=config.CACHE_DIR)
+            self.metadata_cache = create_cache(
+                backend=backend, cache_dir=config.CACHE_DIR
+            )
             logger.debug(f"Metadata cache enabled (backend: {config.CACHE_BACKEND})")
         else:
             self.metadata_cache = None
@@ -140,11 +144,11 @@ class COTAHISTDownloader:
         metadata = {"file_path": str(file_path), "size": file_path.stat().st_size}
 
         self.metadata_cache.set(cache_key, metadata, ttl=ttl_seconds)
-        logger.debug(f"Updated cache metadata for {cache_key} (TTL: {config.CACHE_TTL_DAYS} days)")
+        logger.debug(
+            f"Updated cache metadata for {cache_key} (TTL: {config.CACHE_TTL_DAYS} days)"
+        )
 
-    def _fetch_with_progress(
-        self, url: str, zip_filename: str
-    ) -> bytearray:
+    def _fetch_with_progress(self, url: str, zip_filename: str) -> bytearray:
         """
         Fetch file from URL with optional progress bar.
 
@@ -229,7 +233,13 @@ class COTAHISTDownloader:
                 content = self._fetch_with_progress(url, zip_filename)
 
                 # Check if we got HTML instead of ZIP (CAPTCHA page)
-                if content[:100].decode("utf-8", errors="ignore").lower().strip().startswith("<!doctype html"):
+                if (
+                    content[:100]
+                    .decode("utf-8", errors="ignore")
+                    .lower()
+                    .strip()
+                    .startswith("<!doctype html")
+                ):
                     raise ValueError(
                         f"Received HTML instead of ZIP file. CAPTCHA may be required.\n"
                         f"Please download manually from:\n"

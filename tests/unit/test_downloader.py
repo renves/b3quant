@@ -55,7 +55,10 @@ class TestCOTAHISTDownloader:
         # Mock the download
         with patch.object(downloader.session, "get") as mock_get:
             mock_response = Mock()
-            mock_response.headers = {"Content-Type": "application/zip", "content-length": "8"}
+            mock_response.headers = {
+                "Content-Type": "application/zip",
+                "content-length": "8",
+            }
             mock_response.iter_content = Mock(return_value=[b"fake zip"])
             mock_response.raise_for_status = Mock()
             mock_get.return_value = mock_response

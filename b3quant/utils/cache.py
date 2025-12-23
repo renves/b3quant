@@ -69,7 +69,9 @@ class JSONCache(CacheBackend):
             with open(self.cache_file, encoding="utf-8") as f:
                 return json.load(f)  # type: ignore[no-any-return]
         except (OSError, json.JSONDecodeError) as e:
-            logger.warning(f"Failed to load cache file: {e}. Starting with empty cache.")
+            logger.warning(
+                f"Failed to load cache file: {e}. Starting with empty cache."
+            )
             return {}
 
     def _save(self) -> None:
@@ -118,7 +120,11 @@ class JSONCache(CacheBackend):
         if ttl is not None:
             expires_at = time.time() + ttl
 
-        self._cache[key] = {"value": value, "expires_at": expires_at, "created_at": time.time()}
+        self._cache[key] = {
+            "value": value,
+            "expires_at": expires_at,
+            "created_at": time.time(),
+        }
 
         self._save()
         logger.debug(f"Cache set for key '{key}' (TTL: {ttl}s)")
