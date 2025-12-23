@@ -55,8 +55,9 @@ class TestCOTAHISTDownloader:
         # Mock the download
         with patch.object(downloader.session, "get") as mock_get:
             mock_response = Mock()
-            mock_response.headers = {"Content-Type": "application/zip"}
-            mock_response.content = b"fake zip"
+            mock_response.headers = {"Content-Type": "application/zip", "content-length": "8"}
+            mock_response.iter_content = Mock(return_value=[b"fake zip"])
+            mock_response.raise_for_status = Mock()
             mock_get.return_value = mock_response
 
             # Usando RuntimeError em vez de Exception genérica (B017)

@@ -16,11 +16,13 @@ import logging
 import zipfile
 from datetime import datetime
 from pathlib import Path
+from typing import Literal, cast
 
 import requests
+from tqdm import tqdm
 
 from .. import config
-from ..utils.cache import create_cache
+from ..utils.cache import CacheBackend, create_cache
 from ..utils.retry import exponential_backoff_with_jitter
 
 logger = logging.getLogger(__name__)
@@ -58,7 +60,10 @@ class COTAHISTDownloader:
     }
 
     def __init__(
-        self, cache_dir: str = "./data/raw", use_metadata_cache: bool | None = None
+        self,
+        cache_dir: str = "./data/raw",
+        use_metadata_cache: bool | None = None,
+        show_progress: bool | None = None,
     ):
         """
         Initialize downloader.
@@ -66,6 +71,7 @@ class COTAHISTDownloader:
         Args:
             cache_dir: Directory to store downloaded files
             use_metadata_cache: Enable metadata cache (default: from config)
+            show_progress: Show progress bars (default: from config)
         """
         self.cache_dir = Path(cache_dir)
         self.cache_dir.mkdir(parents=True, exist_ok=True)
@@ -77,13 +83,18 @@ class COTAHISTDownloader:
         self.use_metadata_cache = (
             use_metadata_cache if use_metadata_cache is not None else config.CACHE_ENABLED
         )
+        self.metadata_cache: CacheBackend | None
         if self.use_metadata_cache:
-            self.metadata_cache = create_cache(
-                backend=config.CACHE_BACKEND, cache_dir=config.CACHE_DIR
-            )
+            backend = cast(Literal["json", "sqlite"], config.CACHE_BACKEND)
+            self.metadata_cache = create_cache(backend=backend, cache_dir=config.CACHE_DIR)
             logger.debug(f"Metadata cache enabled (backend: {config.CACHE_BACKEND})")
         else:
             self.metadata_cache = None
+
+        # Progress bar setting
+        self.show_progress = (
+            show_progress if show_progress is not None else config.SHOW_PROGRESS
+        )
 
     def _is_cache_valid(self, cache_key: str, file_path: Path) -> bool:
         """
@@ -131,6 +142,51 @@ class COTAHISTDownloader:
         self.metadata_cache.set(cache_key, metadata, ttl=ttl_seconds)
         logger.debug(f"Updated cache metadata for {cache_key} (TTL: {config.CACHE_TTL_DAYS} days)")
 
+    def _fetch_with_progress(
+        self, url: str, zip_filename: str
+    ) -> bytearray:
+        """
+        Fetch file from URL with optional progress bar.
+
+        Args:
+            url: URL to download from
+            zip_filename: Name of file being downloaded (for display)
+
+        Returns:
+            Downloaded content as bytearray
+
+        Raises:
+            requests.exceptions.RequestException: If download fails
+        """
+        response = self.session.get(url, timeout=config.REQUEST_TIMEOUT, stream=True)
+        response.raise_for_status()
+
+        # Get total file size for progress bar
+        total_size = int(response.headers.get("content-length", 0))
+
+        # Download with optional progress bar
+        content = bytearray()
+        if self.show_progress and total_size > 0:
+            with tqdm(
+                total=total_size,
+                unit="B",
+                unit_scale=True,
+                desc=f"Downloading {zip_filename}",
+                bar_format=config.PROGRESS_BAR_FORMAT,
+                colour=config.PROGRESS_BAR_COLOUR,
+            ) as pbar:
+                for chunk in response.iter_content(chunk_size=8192):
+                    if chunk:
+                        content.extend(chunk)
+                        pbar.update(len(chunk))
+        else:
+            # No progress bar
+            for chunk in response.iter_content(chunk_size=8192):
+                if chunk:
+                    content.extend(chunk)
+
+        return content
+
     def _download_with_retry(
         self,
         url: str,
@@ -169,12 +225,11 @@ class COTAHISTDownloader:
                     f"Downloading {url} (attempt {attempt + 1}/{max_retries})..."
                 )
 
-                response = self.session.get(url, timeout=config.REQUEST_TIMEOUT)
-                response.raise_for_status()
+                # Fetch file content with progress bar
+                content = self._fetch_with_progress(url, zip_filename)
 
                 # Check if we got HTML instead of ZIP (CAPTCHA page)
-                content_type = response.headers.get("Content-Type", "").lower()
-                if "text/html" in content_type:
+                if content[:100].decode("utf-8", errors="ignore").lower().strip().startswith("<!doctype html"):
                     raise ValueError(
                         f"Received HTML instead of ZIP file. CAPTCHA may be required.\n"
                         f"Please download manually from:\n"
@@ -183,7 +238,7 @@ class COTAHISTDownloader:
                     )
 
                 logger.info(f"Extracting {zip_filename}...")
-                with zipfile.ZipFile(io.BytesIO(response.content)) as z:
+                with zipfile.ZipFile(io.BytesIO(content)) as z:
                     z.extractall(self.cache_dir)
 
                 if not txt_path.exists():
@@ -373,13 +428,31 @@ class COTAHISTDownloader:
             >>> print(f"Downloaded {len(paths)} files")
         """
         paths = []
+        years = list(range(start_year, end_year + 1))
 
-        for year in range(start_year, end_year + 1):
+        # Use progress bar if enabled
+        iterator = (
+            tqdm(
+                years,
+                desc="Downloading years",
+                unit="year",
+                bar_format=config.PROGRESS_BAR_FORMAT,
+                colour=config.PROGRESS_BAR_COLOUR,
+            )
+            if self.show_progress
+            else years
+        )
+
+        for year in iterator:
             try:
                 path = self.download_yearly(year)
                 paths.append(path)
+                if self.show_progress and isinstance(iterator, tqdm):
+                    iterator.set_postfix_str(f"✓ {year}")
             except Exception as e:
                 logger.error(f"Failed to download year {year}: {e}")
+                if self.show_progress and isinstance(iterator, tqdm):
+                    iterator.set_postfix_str(f"✗ {year}")
                 if not skip_errors:
                     raise
 

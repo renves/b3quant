@@ -27,6 +27,11 @@ CACHE_DIR = Path("./data/cache")  # Cache directory
 CACHE_TTL_DAYS = 30  # Default TTL for cached files (days)
 CACHE_ENABLED = True  # Enable/disable caching globally
 
+# Progress Bar Settings
+SHOW_PROGRESS = True  # Show progress bars for downloads
+PROGRESS_BAR_FORMAT = "{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]"
+PROGRESS_BAR_COLOUR = "green"
+
 # Logging
 LOG_LEVEL = "INFO"
 LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"

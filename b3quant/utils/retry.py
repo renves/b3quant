@@ -55,7 +55,7 @@ def exponential_backoff_with_jitter(
     if jitter:
         delay = random.uniform(0, delay)
 
-    return delay
+    return delay  # type: ignore[no-any-return]
 
 
 def retry_with_backoff(
