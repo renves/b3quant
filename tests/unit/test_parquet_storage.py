@@ -184,7 +184,9 @@ class TestParquetStorageCompression:
     @pytest.mark.parametrize("compression", ["snappy", "gzip", "zstd"])
     def test_compression_algorithms(self, tmp_path, sample_options_df, compression):
         """Test different compression algorithms."""
-        storage = ParquetStorage(base_path=tmp_path / compression, compression=compression)
+        storage = ParquetStorage(
+            base_path=tmp_path / compression, compression=compression
+        )
         path = storage.write_options(sample_options_df, year=2024)
 
         assert path.exists()
