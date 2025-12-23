@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "b3quant"
-version = "0.1.9"
+version = "0.1.10"
 description = "Python library for downloading and parsing B3 (Brazilian Stock Exchange) market data"
 readme = "README.md"
 authors = [

@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.10](https://github.com/renves/b3quant/compare/b3quant-v0.1.9...b3quant-v0.1.10) (2025-12-23)
+
+
+### Features
+
+* implement Black-Scholes pricing model with Greeks (Phase 1) ([7597fa6](https://github.com/renves/b3quant/commit/7597fa68f75f4e2a00e1378964c8ddd61c0d3400))
+* implement Black-Scholes pricing model with Greeks (Phase 1) ([e58c138](https://github.com/renves/b3quant/commit/e58c13829d11f14e560b1199e59ff088647de5bf))
+
+
+### Bug Fixes
+
+* apply ruff linting and formatting fixes ([2c34777](https://github.com/renves/b3quant/commit/2c34777c9aa8ee9f53713a546220379fe5fee248))
+
 ## [0.1.9](https://github.com/renves/b3quant/compare/b3quant-v0.1.8...b3quant-v0.1.9) (2025-12-21)
 
 
