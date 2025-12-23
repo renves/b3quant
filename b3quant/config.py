@@ -27,6 +27,11 @@ CACHE_DIR = Path("./data/cache")  # Cache directory
 CACHE_TTL_DAYS = 30  # Default TTL for cached files (days)
 CACHE_ENABLED = True  # Enable/disable caching globally
 
+# Parquet Cache Settings (for parsed data)
+USE_PARQUET_CACHE = True  # Enable Parquet cache for parsed data (much faster reads)
+PARQUET_CACHE_SUBDIR = "parquet"  # Subdirectory under cache_dir for Parquet files
+PARQUET_COMPRESSION = "snappy"  # Compression algorithm: "snappy", "gzip", "zstd"
+
 # Progress Bar Settings
 SHOW_PROGRESS = True  # Show progress bars for downloads
 PROGRESS_BAR_FORMAT = "{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]"
