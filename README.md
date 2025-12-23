@@ -9,12 +9,15 @@ Python library for downloading and parsing historical market data from B3 (Brazi
 
 ## Features
 
-- **Download COTAHIST files** - Yearly or daily historical data
+- **Download COTAHIST files** - Yearly, monthly, or daily historical data
 - **Parse to pandas DataFrames** - Clean, typed data ready for analysis
 - **Filter by instrument type** - Options, stocks, or all instruments
 - **Simple, Pythonic API** - Intuitive interface
 - **Type hints** - Full type annotations for better IDE support
-- **Caching** - Avoid redundant downloads
+- **Smart caching with TTL** - JSON or SQLite cache backends with automatic expiration
+- **Retry with exponential backoff** - Automatic retry with jitter to handle network failures
+- **Progress bars** - Visual feedback for long-running downloads
+- **Black-Scholes pricing** - Option pricing and Greeks calculation
 - **No R dependencies** - Pure Python implementation  
 
 ## Installation
@@ -163,6 +166,59 @@ options = b3.get_options(year=2024)
 options = b3.get_options(year=2024, force_download=True)
 ```
 
+### Cache Configuration
+
+b3quant supports two cache backends with automatic TTL (Time-To-Live) expiration:
+
+```python
+from b3quant import B3Quant
+from b3quant.downloaders.cotahist import COTAHISTDownloader
+
+# Use JSON cache (default, human-readable)
+downloader = COTAHISTDownloader(
+    cache_dir="./data/raw",
+    use_metadata_cache=True  # Default: True
+)
+
+# Files are cached for 30 days by default
+# Configure in b3quant.config.CACHE_TTL_DAYS
+
+# Disable progress bars if needed
+downloader = COTAHISTDownloader(show_progress=False)
+
+# Download multiple years with progress bar
+paths = downloader.download_range(2020, 2024)
+```
+
+**Cache Backends:**
+- **JSON** (default): Simple, human-readable, good for small datasets
+- **SQLite**: More efficient for large datasets and concurrent access
+
+Configure in `b3quant/config.py`:
+```python
+CACHE_BACKEND = "json"  # or "sqlite"
+CACHE_TTL_DAYS = 30     # Cache expiration in days
+```
+
+### Automatic Retry
+
+Downloads automatically retry on failure using exponential backoff with jitter:
+
+```python
+# Automatic retry is built-in
+# Default: 3 attempts with exponential backoff
+downloader = COTAHISTDownloader()
+path = downloader.download_yearly(2024)  # Retries automatically on failure
+
+# Customize retry attempts
+path = downloader.download_yearly(2024, max_retries=5)
+```
+
+**Retry Strategy:**
+- Exponential backoff: delays increase exponentially (1s, 2s, 4s, ...)
+- Jitter: random delay to prevent thundering herd problem
+- Configurable in `b3quant.config`: `MAX_RETRY_ATTEMPTS`, `RETRY_BASE_DELAY`, `RETRY_MAX_DELAY`
+
 ## DataFrame Schema
 
 ### Options Data
@@ -191,6 +247,75 @@ options = b3.get_options(year=2024, force_download=True)
 ### Stocks Data
 
 Similar schema but without strike_price, maturity_date, and option-specific fields.
+
+## Options Pricing
+
+b3quant includes a Black-Scholes pricing model for European options with full Greeks calculation.
+
+### Black-Scholes Pricing
+
+```python
+from b3quant.models.black_scholes import BlackScholes
+import numpy as np
+
+# Initialize model
+bs = BlackScholes()
+
+# Price a call option
+call_price = bs.price(
+    S=100,           # Spot price
+    K=100,           # Strike price
+    T=1.0,           # Time to maturity (years)
+    r=0.05,          # Risk-free rate
+    sigma=0.2,       # Volatility
+    option_type='call'
+)
+print(f"Call price: {call_price:.2f}")  # 10.45
+
+# Calculate Greeks
+delta = bs.delta(S=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type='call')
+gamma = bs.gamma(S=100, K=100, T=1.0, r=0.05, sigma=0.2)
+vega = bs.vega(S=100, K=100, T=1.0, r=0.05, sigma=0.2)
+theta = bs.theta(S=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type='call')
+rho = bs.rho(S=100, K=100, T=1.0, r=0.05, sigma=0.2, option_type='call')
+
+print(f"Delta: {delta:.4f}")    # 0.6368
+print(f"Gamma: {gamma:.4f}")    # 0.0199
+print(f"Vega: {vega:.4f}")      # 39.79
+print(f"Theta: {theta:.4f}")    # -6.41
+print(f"Rho: {rho:.4f}")        # 53.23
+```
+
+### Vectorized Pricing
+
+The Black-Scholes model supports vectorized operations for efficient bulk calculations:
+
+```python
+import numpy as np
+from b3quant.models.black_scholes import BlackScholes
+
+bs = BlackScholes()
+
+# Price multiple strikes at once
+strikes = np.array([95, 100, 105])
+prices = bs.price(S=100, K=strikes, T=1.0, r=0.05, sigma=0.2, option_type='call')
+print(prices)  # [13.04, 10.45, 8.24]
+
+# Calculate Greeks for entire option chain
+deltas = bs.delta(S=100, K=strikes, T=1.0, r=0.05, sigma=0.2, option_type='call')
+print(deltas)  # [0.7112, 0.6368, 0.5596]
+```
+
+### Dividends Support
+
+```python
+# Price with continuous dividend yield
+call_price = bs.price(
+    S=100, K=100, T=1.0, r=0.05, sigma=0.2,
+    q=0.02,  # 2% dividend yield
+    option_type='call'
+)
+```
 
 ## Examples
 
