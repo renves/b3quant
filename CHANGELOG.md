@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.15](https://github.com/renves/b3quant/compare/b3quant-v0.1.14...b3quant-v0.1.15) (2025-12-24)
+
+
+### Features
+
+* add multi-method Implied Volatility solver ([bdf7c9e](https://github.com/renves/b3quant/commit/bdf7c9eadeaef5bcdf4651ad0faa912cda374392))
+
+
+### Bug Fixes
+
+* improve type hints for mypy compliance ([6eeee49](https://github.com/renves/b3quant/commit/6eeee493868803bf3a431721dd83ed5fe0c29169))
+
 ## [0.1.14](https://github.com/renves/b3quant/compare/b3quant-v0.1.13...b3quant-v0.1.14) (2025-12-23)
 
 
