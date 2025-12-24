@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.16](https://github.com/renves/b3quant/compare/b3quant-v0.1.15...b3quant-v0.1.16) (2025-12-24)
+
+
+### Features
+
+* implementation of greeks method for Black Scholes ([b9730a0](https://github.com/renves/b3quant/commit/b9730a054299fdaeac502502d6f3c4192295c346))
+
+
+### Bug Fixes
+
+* improve mypy compliance in iv_solver ([113e8f0](https://github.com/renves/b3quant/commit/113e8f0488c686599d212859d961303512a7ba4d))
+* improve mypy compliance in iv_solver ([79d7a8e](https://github.com/renves/b3quant/commit/79d7a8e425a0de1e70d4303b2d51c803734f252d))
+
 ## [0.1.15](https://github.com/renves/b3quant/compare/b3quant-v0.1.14...b3quant-v0.1.15) (2025-12-24)
 
 
