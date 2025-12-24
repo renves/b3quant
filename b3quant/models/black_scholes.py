@@ -545,7 +545,7 @@ class BlackScholes(PricingModel, GreeksCalculator):
 
         if is_array:
             # Use vectorized solver
-            return self.iv_solver.solve_vectorized(
+            return self.iv_solver.solve_vectorized(  # type: ignore[no-any-return]
                 prices=price,
                 S=S,
                 K=K,
@@ -557,7 +557,7 @@ class BlackScholes(PricingModel, GreeksCalculator):
             )
         else:
             # Single value solver
-            return self.iv_solver.solve(
+            return self.iv_solver.solve(  # type: ignore[no-any-return]
                 price=price,
                 S=S,
                 K=K,

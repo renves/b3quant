@@ -1,7 +1,6 @@
 """Tests for Implied Volatility Solver."""
 
 import numpy as np
-import pytest
 
 from b3quant.models.iv_solver import ImpliedVolatilitySolver
 

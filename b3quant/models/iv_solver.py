@@ -223,12 +223,12 @@ class ImpliedVolatilitySolver:
             try:
                 iv = self.solve(
                     price=prices[i],
-                    S=S[i],
+                    S=S[i],  # type: ignore[index]
                     K=K[i],
-                    T=T[i],
-                    r=r[i],
-                    q=q[i],
-                    option_type=option_type[i],
+                    T=T[i],  # type: ignore[index]
+                    r=r[i],  # type: ignore[index]
+                    q=q[i],  # type: ignore[index]
+                    option_type=option_type[i],  # type: ignore[index]
                     method=method,
                 )
                 if iv is not None:
@@ -310,7 +310,7 @@ class ImpliedVolatilitySolver:
             sigma_guess = 0.2 + moneyness  # Start with higher vol for OTM
 
         # Ensure guess is within bounds
-        return np.clip(sigma_guess, self.min_vol, self.max_vol)
+        return float(np.clip(sigma_guess, self.min_vol, self.max_vol))
 
     def _newton_raphson(
         self,
@@ -353,7 +353,7 @@ class ImpliedVolatilitySolver:
             sigma_new = sigma - self.damping * (price_diff / vega_val)
 
             # Enforce bounds
-            sigma_new = np.clip(sigma_new, self.min_vol, self.max_vol)
+            sigma_new = float(np.clip(sigma_new, self.min_vol, self.max_vol))
 
             # Check for convergence in sigma
             if abs(sigma_new - sigma) < 1e-8:
@@ -432,10 +432,12 @@ class ImpliedVolatilitySolver:
         d2 = d1 - sigma * np.sqrt(T)
 
         if option_type.lower() == "call":
-            return S * np.exp(-q * T) * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
+            return float(
+                S * np.exp(-q * T) * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
+            )
         else:
-            return K * np.exp(-r * T) * norm.cdf(-d2) - S * np.exp(-q * T) * norm.cdf(
-                -d1
+            return float(
+                K * np.exp(-r * T) * norm.cdf(-d2) - S * np.exp(-q * T) * norm.cdf(-d1)
             )
 
     def _vega(
@@ -449,4 +451,4 @@ class ImpliedVolatilitySolver:
     ) -> float:
         """Calculate option vega (∂Price/∂σ)."""
         d1 = (np.log(S / K) + (r - q + 0.5 * sigma**2) * T) / (sigma * np.sqrt(T))
-        return S * np.exp(-q * T) * norm.pdf(d1) * np.sqrt(T)
+        return float(S * np.exp(-q * T) * norm.pdf(d1) * np.sqrt(T))

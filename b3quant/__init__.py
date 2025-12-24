@@ -162,17 +162,20 @@ class B3Quant:
                 return df
 
         # Cache miss or force_parse - download and parse
+        # At this point, year is guaranteed to be int (validated above or defaulted)
+        assert year is not None  # Help mypy understand year is int here
         if day is not None:
-            date_obj = datetime(year, month, day)  # type: ignore
+            assert month is not None  # Guaranteed by validation
+            date_obj = datetime(year, month, day)
             filepath = self.downloader.download_daily(date_obj, force=force_download)
         elif month is not None:
             filepath = self.downloader.download_monthly(
                 year,
                 month,
-                force=force_download,  # type: ignore
+                force=force_download,
             )
         else:
-            filepath = self.downloader.download_yearly(year, force=force_download)  # type: ignore
+            filepath = self.downloader.download_yearly(year, force=force_download)
 
         # Parse file
         logger.info(f"Parsing {filepath.name}...")
