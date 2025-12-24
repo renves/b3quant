@@ -45,11 +45,12 @@ LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 MIN_FILE_SIZE = 1_000
 COTAHIST_LINE_LENGTH = 245
 
-# Option Pricing Models
-IV_SOLVER_MAX_ITERATIONS = 100
-IV_SOLVER_TOLERANCE = 1e-6
-IV_SOLVER_MIN_VOL = 1e-4
-IV_SOLVER_MAX_VOL = 5.0
+# Option Pricing Models - Implied Volatility Solver
+IV_SOLVER_MAX_ITERATIONS = 100  # Maximum iterations for Newton-Raphson
+IV_SOLVER_TOLERANCE = 1e-6  # Price error tolerance
+IV_SOLVER_MIN_VOL = 1e-4  # Minimum volatility (0.01%)
+IV_SOLVER_MAX_VOL = 5.0  # Maximum volatility (500%)
+IV_INTRINSIC_MARGIN = 0.001  # Margin above intrinsic value for ITM filter (BRL)
 
 # B3 Reference Rates
 B3_RATES_URL = "https://www2.bmf.com.br/pages/portal/bmfbovespa/lumis/lum-taxas-referenciais-bmf-ptBR.asp"
