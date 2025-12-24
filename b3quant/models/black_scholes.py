@@ -7,6 +7,7 @@ import numpy as np
 from scipy import stats  # type: ignore[import-untyped]
 
 from .base import GreeksCalculator, PricingModel
+from .iv_solver import ImpliedVolatilitySolver
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +46,8 @@ class BlackScholes(PricingModel, GreeksCalculator):
     """
 
     def __init__(self):
-        pass
+        """Initialize Black-Scholes model with IV solver."""
+        self.iv_solver = ImpliedVolatilitySolver()
 
     def price(  # type: ignore[override]
         self,
@@ -444,4 +446,124 @@ class BlackScholes(PricingModel, GreeksCalculator):
         if sigma is not None and np.any((sigma > 0) & (sigma < 1e-6)):
             logger.warning(
                 "Volatility is very small (< 1e-6). Numerical precision may be affected."
+            )
+
+    def implied_volatility(
+        self,
+        price: float | np.ndarray,
+        S: float | np.ndarray,
+        K: float | np.ndarray,
+        T: float | np.ndarray,
+        r: float | np.ndarray,
+        q: float | np.ndarray = 0,
+        option_type: Literal["call", "put"] | np.ndarray = "call",
+        method: Literal["auto", "newton", "brent"] = "auto",
+    ) -> float | np.ndarray | None:
+        """
+        Calculate implied volatility from market price.
+
+        Uses a multi-method solver with Newton-Raphson (fast path) and
+        Brent's method (robust fallback). Automatically handles edge cases.
+
+        Parameters
+        ----------
+        price : float | np.ndarray
+            Market price of the option(s)
+        S : float | np.ndarray
+            Current price of underlying asset
+        K : float | np.ndarray
+            Strike price
+        T : float | np.ndarray
+            Time to maturity (in years)
+        r : float | np.ndarray
+            Risk-free interest rate (annualized)
+        q : float | np.ndarray, default=0
+            Dividend yield (annualized)
+        option_type : {'call', 'put'} | np.ndarray, default='call'
+            Type of option(s)
+        method : {'auto', 'newton', 'brent'}, default='auto'
+            Solver method to use:
+            - 'auto': Try Newton-Raphson, fall back to Brent if needed
+            - 'newton': Newton-Raphson only (faster, may fail)
+            - 'brent': Brent's method only (slower, guaranteed convergence)
+
+        Returns
+        -------
+        float | np.ndarray | None
+            Implied volatility (σ). Returns None or NaN for failed calculations.
+            For vectorized inputs, returns array with NaN for failures.
+
+        Examples
+        --------
+        >>> bs = BlackScholes()
+        >>>
+        >>> # Single option
+        >>> iv = bs.implied_volatility(
+        ...     price=5.50,
+        ...     S=100,
+        ...     K=100,
+        ...     T=30/365,
+        ...     r=0.05,
+        ...     option_type='call'
+        ... )
+        >>> print(f"IV: {iv:.2%}")
+        IV: 20.15%
+        >>>
+        >>> # Vectorized (option chain)
+        >>> prices = np.array([8.50, 5.50, 3.20])
+        >>> strikes = np.array([95, 100, 105])
+        >>> ivs = bs.implied_volatility(
+        ...     price=prices,
+        ...     S=100,
+        ...     K=strikes,
+        ...     T=30/365,
+        ...     r=0.05,
+        ...     option_type='call'
+        ... )
+        >>> print(f"IVs: {ivs}")
+        IVs: [0.198 0.201 0.205]
+
+        Notes
+        -----
+        - Uses Newton-Raphson with Brenner-Subrahmanyam initial guess for speed
+        - Falls back to Brent's method for robustness in edge cases
+        - Handles deep ITM/OTM options and near expiration gracefully
+        - Returns None/NaN for invalid inputs or convergence failures
+
+        See Also
+        --------
+        price : Calculate option price given volatility
+        ImpliedVolatilitySolver : Lower-level IV solver class
+
+        References
+        ----------
+        - Brenner & Subrahmanyam (1988): Initial guess approximation
+        - Jäckel, P. (2015): "Let's Be Rational" - Advanced IV methods
+        """
+        # Check if vectorized input
+        is_array = isinstance(price, np.ndarray)
+
+        if is_array:
+            # Use vectorized solver
+            return self.iv_solver.solve_vectorized(
+                prices=price,
+                S=S,
+                K=K,
+                T=T,
+                r=r,
+                q=q,
+                option_type=option_type,
+                method=method,
+            )
+        else:
+            # Single value solver
+            return self.iv_solver.solve(
+                price=price,
+                S=S,
+                K=K,
+                T=T,
+                r=r,
+                q=q,
+                option_type=option_type,
+                method=method,
             )
