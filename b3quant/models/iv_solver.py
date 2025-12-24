@@ -40,8 +40,8 @@ import logging
 from typing import Literal
 
 import numpy as np
-from scipy.optimize import brentq
-from scipy.stats import norm
+from scipy.optimize import brentq  # type: ignore[import-untyped]
+from scipy.stats import norm  # type: ignore[import-untyped]
 
 from .. import config
 
@@ -387,14 +387,15 @@ class ImpliedVolatilitySolver:
             bs_price = self._black_scholes_price(S, K, T, r, sigma, q, option_type)
             return bs_price - price
 
-        # Use brentq with explicit bounds
-        return brentq(
-            objective,
-            a=self.min_vol,
-            b=self.max_vol,
-            xtol=self.tolerance,
-            rtol=self.tolerance,
-            maxiter=100,
+        return float(
+            brentq(
+                objective,
+                a=self.min_vol,
+                b=self.max_vol,
+                xtol=self.tolerance,
+                rtol=self.tolerance,
+                maxiter=100,
+            )
         )
 
     def _handle_near_expiry(
