@@ -347,6 +347,49 @@ class BlackScholes(PricingModel, GreeksCalculator):
         else:
             raise ValueError(f"Invalid option_type: {option_type}")
 
+    def greeks(  # type: ignore[override]
+        self,
+        S: float | np.ndarray,
+        K: float | np.ndarray,
+        T: float | np.ndarray,
+        r: float | np.ndarray,
+        sigma: float | np.ndarray,
+        q: float | np.ndarray = 0,
+        option_type: Literal["call", "put"] = "call",
+    ) -> dict[str, float | np.ndarray]:
+        """
+        Calculate all primary Greeks.
+
+        Parameters
+        ----------
+        S : float | np.ndarray
+            Current price of underlying asset
+        K : float | np.ndarray
+            Strike price
+        T : float | np.ndarray
+            Time to maturity (in years)
+        r : float | np.ndarray
+            Risk-free interest rate
+        sigma : float | np.ndarray
+            Volatility
+        q : float | np.ndarray, default=0
+            Dividend yield
+        option_type : {'call', 'put'}, default='call'
+            Type of option
+
+        Returns
+        -------
+        dict[str, float | np.ndarray]
+            Dictionary of Greeks: delta, gamma, vega, theta, rho
+        """
+        return {
+            "delta": self.delta(S, K, T, r, sigma, q, option_type),
+            "gamma": self.gamma(S, K, T, r, sigma, q),
+            "vega": self.vega(S, K, T, r, sigma, q),
+            "theta": self.theta(S, K, T, r, sigma, q, option_type),
+            "rho": self.rho(S, K, T, r, sigma, q, option_type),
+        }
+
     @staticmethod
     def _d1(
         S: float | np.ndarray,
