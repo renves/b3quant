@@ -22,6 +22,8 @@ Python library for downloading and parsing historical market data from B3 (Brazi
 - **Retry with exponential backoff** - Automatic retry with jitter to handle network failures
 - **Progress bars** - Visual feedback for long-running downloads
 - **Black-Scholes pricing** - Option pricing and Greeks calculation
+- **Implied Volatility solver** - Multi-method IV calculation (Newton-Raphson, Brent)
+- **Feature engineering for ML** - Advanced features for options pricing models
 - **No R dependencies** - Pure Python implementation  
 
 ## Installation
@@ -431,6 +433,164 @@ call_price = bs.price(
     q=0.02,  # 2% dividend yield
     option_type='call'
 )
+```
+
+### Implied Volatility Calculation
+
+b3quant includes a robust multi-method IV solver:
+
+```python
+from b3quant.models.iv_solver import ImpliedVolatilitySolver
+
+solver = ImpliedVolatilitySolver()
+
+# Calculate IV for a single option
+iv = solver.solve(
+    price=5.0,
+    S=100,
+    K=105,
+    T=0.5,
+    r=0.05,
+    option_type='call',
+    method='newton'  # or 'brent', 'auto'
+)
+print(f"Implied Volatility: {iv:.2%}")
+
+# Vectorized IV calculation
+import numpy as np
+prices = np.array([5.0, 3.5, 2.0])
+strikes = np.array([95, 100, 105])
+
+ivs = solver.solve_vectorized(
+    price=prices,
+    S=100,
+    K=strikes,
+    T=0.5,
+    r=0.05,
+    option_type='call'
+)
+```
+
+**Available methods**:
+- `newton`: Newton-Raphson (fast, requires good initial guess)
+- `brent`: Brent's method (robust, always converges)
+- `auto`: Automatically selects best method
+
+## Feature Engineering for ML
+
+b3quant provides comprehensive feature engineering for machine learning models:
+
+```python
+from b3quant.features import OptionFeatureEngineer
+import b3quant as pyb
+
+# Get data
+options = pyb.get_options(year=2024, month=11)
+stocks = pyb.get_stocks(year=2024, month=11)
+
+# Initialize feature engineer
+fe = OptionFeatureEngineer(lookback_windows=[10, 30, 60])
+
+# Add all features
+options_with_features = fe.add_all_features(options, stocks)
+```
+
+### Feature Categories
+
+#### 1. Moneyness Features
+```python
+# Add moneyness features
+options = fe.add_moneyness_features(options)
+
+# Available features:
+# - moneyness (S/K)
+# - log_moneyness
+# - is_itm, is_atm, is_otm (binary flags)
+```
+
+#### 2. Time Features
+```python
+# Add time-related features
+options = fe.add_time_features(options)
+
+# Available features:
+# - day_of_week, day_of_month, month, quarter
+# - is_month_end, is_quarter_end
+# - sqrt_time, inv_sqrt_time
+# - is_short_term, is_medium_term, is_long_term
+```
+
+#### 3. Volatility Surface Features
+```python
+# Add IV surface features
+options = fe.add_volatility_features(options)
+
+# Available features (for each lookback window):
+# - iv_rank_{10,30,60}d: IV percentile rank
+# - iv_percentile_{10,30,60}d: Rolling percentile
+# - iv_skew: Put-Call IV difference
+```
+
+#### 4. Market Microstructure Features
+```python
+# Add market features (requires stocks data)
+options = fe.add_market_features(options, stocks)
+
+# Available features (for each lookback window):
+# - realized_vol_{10,30,60}d: Historical volatility
+# - momentum_{10,30,60}d: Price momentum
+# - volume_ratio_{10,30,60}d: Volume vs average
+```
+
+#### 5. Option-Specific Metrics
+```python
+# Calculate option metrics
+options = fe.calculate_option_metrics(options)
+
+# Available metrics:
+# - volume_pct: % of total underlying volume
+# - put_call_ratio: Put volume / Call volume
+
+# IV statistics by group
+iv_stats = fe.calculate_iv_metrics(options)
+# Returns: iv_mean, iv_std, iv_min, iv_max, iv_median, iv_range, iv_cv
+```
+
+### ML-Ready Dataset Example
+
+```python
+from b3quant.features import OptionFeatureEngineer
+import b3quant as pyb
+
+# Fetch data
+options = pyb.get_options(year=2024)
+stocks = pyb.get_stocks(year=2024)
+
+# Merge underlying prices
+options = options.merge(
+    stocks[['underlying', 'trade_date', 'close_price']],
+    on=['underlying', 'trade_date'],
+    suffixes=('', '_underlying')
+)
+
+# Engineer features
+fe = OptionFeatureEngineer()
+options_ml = fe.add_all_features(options, stocks)
+
+# Select features for modeling
+feature_cols = [
+    'moneyness', 'log_moneyness', 'time_to_maturity',
+    'iv_rank_30d', 'iv_percentile_30d', 'iv_skew',
+    'realized_vol_30d', 'momentum_30d',
+    'volume_pct', 'put_call_ratio'
+]
+
+target = 'close_price'  # or 'implied_volatility'
+
+X = options_ml[feature_cols].dropna()
+y = options_ml.loc[X.index, target]
+
+# Ready for sklearn, xgboost, pytorch, etc.
 ```
 
 ## Examples
