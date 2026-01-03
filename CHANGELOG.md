@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.18](https://github.com/renves/b3quant/compare/b3quant-v0.1.17...b3quant-v0.1.18) (2026-01-03)
+
+
+### Features
+
+* add advanced feature engineering module ([bb36fed](https://github.com/renves/b3quant/commit/bb36fed94bb478b940e5bf312433501482161b21))
+
+
+### Documentation
+
+* add advanced features documentation to README ([f608940](https://github.com/renves/b3quant/commit/f608940eb824b92edec7ed91e2c3e4217b7dfe6b)), closes [#18](https://github.com/renves/b3quant/issues/18)
+
 ## [0.1.17](https://github.com/renves/b3quant/compare/b3quant-v0.1.16...b3quant-v0.1.17) (2026-01-03)
 
 

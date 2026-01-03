@@ -13,7 +13,7 @@ from .parsers.cotahist import COTAHISTParser
 from .parsers.cotahist_metadata import InstrumentCategory
 from .storage.parquet import ParquetStorage
 
-__version__ = "0.1.17"
+__version__ = "0.1.18"
 __author__ = "Renan Alves"
 __email__ = "renanalvees@gmail.com"
 
