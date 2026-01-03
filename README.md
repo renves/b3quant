@@ -556,10 +556,79 @@ iv_stats = fe.calculate_iv_metrics(options)
 # Returns: iv_mean, iv_std, iv_min, iv_max, iv_median, iv_range, iv_cv
 ```
 
+### Advanced Features
+
+For sophisticated ML models, use `AdvancedFeatureEngineer`:
+
+```python
+from b3quant.features import AdvancedFeatureEngineer
+import b3quant as pyb
+
+# Get data with Greeks (calculate using Black-Scholes first)
+options = pyb.get_options(year=2024, month=11)
+stocks = pyb.get_stocks(year=2024, month=11)
+
+# Initialize advanced feature engineer
+afe = AdvancedFeatureEngineer(
+    lookback_windows=[10, 30, 60],
+    regime_windows=[20, 50, 100]
+)
+
+# Add all advanced features
+options_advanced = afe.add_all_advanced_features(
+    options,
+    stocks_df=stocks,
+    benchmark_df=None  # Optional: IBOV or other benchmark
+)
+```
+
+#### Available Advanced Features:
+
+**Greeks Exposure:**
+```python
+options = afe.add_greeks_exposure(options, stocks)
+# - total_gamma_exposure, total_vega_exposure
+# - max_gamma_strike
+# - delta_weighted_volume
+# - delta_hedged_value
+```
+
+**Volatility of Volatility:**
+```python
+options = afe.add_volatility_of_volatility(options)
+# - vol_of_vol_{10,30,60}d
+# - iv_skewness_{10,30,60}d
+```
+
+**Bollinger Bands:**
+```python
+options = afe.add_bollinger_bands(options, num_std=2.0)
+# - bb_width_{10,30,60}d
+# - bb_position_{10,30,60}d (0-1, position within bands)
+```
+
+**RSI (Relative Strength Index):**
+```python
+options = afe.add_rsi(options, period=14)
+# - rsi_{period}d (0-100)
+```
+
+**Regime Detection:**
+```python
+options = afe.add_regime_features(options, benchmark_df)
+# - regime_volatility_{20,50,100}d
+# - regime_trend_strength_{20,50,100}d
+# - regime_autocorr_{20,50,100}d
+# - is_trending_{20,50,100}d (binary)
+# - is_ranging_{20,50,100}d (binary)
+# - is_volatile_{20,50,100}d (binary)
+# - benchmark_corr_{20,50,100}d (if benchmark provided)
+```
+
 ### ML-Ready Dataset Example
 
 ```python
-from b3quant.features import OptionFeatureEngineer
+from b3quant.features import OptionFeatureEngineer, AdvancedFeatureEngineer
 import b3quant as pyb
 
 # Fetch data
@@ -573,16 +642,24 @@ options = options.merge(
     suffixes=('', '_underlying')
 )
 
-# Engineer features
+# Engineer core features
 fe = OptionFeatureEngineer()
 options_ml = fe.add_all_features(options, stocks)
 
+# Add advanced features
+afe = AdvancedFeatureEngineer()
+options_ml = afe.add_all_advanced_features(options_ml, stocks)
+
 # Select features for modeling
 feature_cols = [
+    # Core features
     'moneyness', 'log_moneyness', 'time_to_maturity',
     'iv_rank_30d', 'iv_percentile_30d', 'iv_skew',
     'realized_vol_30d', 'momentum_30d',
-    'volume_pct', 'put_call_ratio'
+    'volume_pct', 'put_call_ratio',
+    # Advanced features
+    'vol_of_vol_30d', 'bb_width_30d', 'rsi_14d',
+    'regime_volatility_50d', 'is_trending_50d'
 ]
 
 target = 'close_price'  # or 'implied_volatility'
@@ -590,7 +667,7 @@ target = 'close_price'  # or 'implied_volatility'
 X = options_ml[feature_cols].dropna()
 y = options_ml.loc[X.index, target]
 
-# Ready for sklearn, xgboost, pytorch, etc.
+# Ready for sklearn, xgboost, pytorch, tensorflow, etc.
 ```
 
 ## Examples
